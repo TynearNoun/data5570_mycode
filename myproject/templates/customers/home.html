@@ -1,0 +1,546 @@
+{% load static %}<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Customer Directory &middot; Django API</title>
+  <style>
+    :root {
+      --bg: #0b1120;
+      --panel: #111a2e;
+      --panel-2: #16213a;
+      --border: #24304d;
+      --text: #e6ecf7;
+      --muted: #94a3b8;
+      --accent: #5b8cff;
+      --accent-soft: rgba(91, 140, 255, 0.14);
+      --green: #34d399;
+      --amber: #fbbf24;
+      --red: #f87171;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: radial-gradient(1200px 600px at 80% -10%, #1b2a4a 0%, var(--bg) 60%);
+      color: var(--text);
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+
+    a { color: var(--accent); }
+
+    .wrap {
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 40px 20px 72px;
+    }
+
+    header.page {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      align-items: flex-end;
+      justify-content: space-between;
+      margin-bottom: 28px;
+    }
+
+    h1 {
+      font-size: 28px;
+      margin: 0 0 6px;
+      letter-spacing: -0.02em;
+    }
+
+    .subtitle { color: var(--muted); margin: 0; font-size: 15px; }
+
+    .links { display: flex; gap: 10px; flex-wrap: wrap; }
+
+    .btn {
+      appearance: none;
+      border: 1px solid var(--border);
+      background: var(--panel-2);
+      color: var(--text);
+      padding: 9px 14px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      text-decoration: none;
+      transition: border-color 120ms ease, background 120ms ease;
+    }
+
+    .btn:hover { border-color: var(--accent); }
+
+    .btn-primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #071022;
+      font-weight: 600;
+    }
+
+    .btn-primary:disabled { opacity: 0.6; cursor: progress; }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 26px;
+    }
+
+    .stat {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px 16px;
+    }
+
+    .stat span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .stat strong { font-size: 24px; font-weight: 650; }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      margin-bottom: 22px;
+    }
+
+    .card-head {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .card-head h2 { font-size: 16px; margin: 0; }
+
+    .toolbar { display: flex; gap: 8px; flex-wrap: wrap; }
+
+    input, select, textarea {
+      background: #0d1526;
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: 10px;
+      padding: 9px 12px;
+      font: inherit;
+      font-size: 14px;
+      width: 100%;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      outline: 2px solid var(--accent-soft);
+      border-color: var(--accent);
+    }
+
+    form.new-customer {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      padding: 18px;
+    }
+
+    form.new-customer .field label {
+      display: block;
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 5px;
+    }
+
+    form.new-customer .actions {
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .form-message { font-size: 13px; color: var(--muted); }
+    .form-message.error { color: var(--red); }
+    .form-message.ok { color: var(--green); }
+
+    table { width: 100%; border-collapse: collapse; }
+
+    th, td {
+      text-align: left;
+      padding: 12px 18px;
+      border-bottom: 1px solid var(--border);
+      font-size: 14px;
+      vertical-align: middle;
+    }
+
+    th {
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-weight: 600;
+    }
+
+    tbody tr:last-child td { border-bottom: none; }
+    tbody tr:hover { background: rgba(91, 140, 255, 0.05); }
+
+    .name { font-weight: 600; }
+    .meta { color: var(--muted); font-size: 12px; }
+
+    .pill {
+      display: inline-block;
+      padding: 3px 9px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      border: 1px solid transparent;
+    }
+
+    .pill.active { color: var(--green); background: rgba(52, 211, 153, 0.12); border-color: rgba(52, 211, 153, 0.35); }
+    .pill.prospect { color: var(--amber); background: rgba(251, 191, 36, 0.12); border-color: rgba(251, 191, 36, 0.35); }
+    .pill.churned { color: var(--red); background: rgba(248, 113, 113, 0.12); border-color: rgba(248, 113, 113, 0.35); }
+
+    .state {
+      padding: 44px 18px;
+      text-align: center;
+      color: var(--muted);
+    }
+
+    .state h3 { color: var(--text); margin: 0 0 6px; font-size: 16px; }
+
+    .skeleton-row {
+      height: 14px;
+      border-radius: 7px;
+      background: linear-gradient(90deg, #172542 0%, #223152 50%, #172542 100%);
+      background-size: 200% 100%;
+      animation: shimmer 1.2s ease-in-out infinite;
+      margin: 12px 18px;
+    }
+
+    @keyframes shimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    .row-delete {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      border-radius: 8px;
+      padding: 5px 10px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    .row-delete:hover { color: var(--red); border-color: var(--red); }
+
+    footer.page {
+      color: var(--muted);
+      font-size: 13px;
+      text-align: center;
+    }
+
+    code {
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1px 6px;
+      font-size: 12.5px;
+    }
+
+    .hidden { display: none !important; }
+
+    @media (max-width: 860px) {
+      .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      form.new-customer { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .col-phone, .col-created { display: none; }
+    }
+
+    @media (max-width: 560px) {
+      .wrap { padding: 24px 14px 56px; }
+      form.new-customer { grid-template-columns: 1fr; }
+      .col-company { display: none; }
+      th, td { padding: 10px 12px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="page">
+      <div>
+        <h1>Customer Directory</h1>
+        <p class="subtitle">Django + Django REST Framework over SQLite. Every row below comes from <code>GET /api/customers/</code>.</p>
+      </div>
+      <nav class="links">
+        <a class="btn" href="/api/customers/">Browsable API</a>
+        <a class="btn" href="/admin/">Django admin</a>
+      </nav>
+    </header>
+
+    <section class="stats" id="stats" aria-label="Customer counts">
+      <div class="stat"><span>Total</span><strong data-stat="total">&mdash;</strong></div>
+      <div class="stat"><span>Active</span><strong data-stat="active">&mdash;</strong></div>
+      <div class="stat"><span>Prospect</span><strong data-stat="prospect">&mdash;</strong></div>
+      <div class="stat"><span>Churned</span><strong data-stat="churned">&mdash;</strong></div>
+    </section>
+
+    <section class="card">
+      <div class="card-head">
+        <h2>Add a customer</h2>
+        <span class="meta">POST /api/customers/</span>
+      </div>
+      <form class="new-customer" id="customer-form" novalidate>
+        {% csrf_token %}
+        <div class="field">
+          <label for="first_name">First name</label>
+          <input id="first_name" name="first_name" required autocomplete="given-name">
+        </div>
+        <div class="field">
+          <label for="last_name">Last name</label>
+          <input id="last_name" name="last_name" required autocomplete="family-name">
+        </div>
+        <div class="field">
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" required autocomplete="email">
+        </div>
+        <div class="field">
+          <label for="phone_number">Phone</label>
+          <input id="phone_number" name="phone_number" placeholder="555-0134" autocomplete="tel">
+        </div>
+        <div class="field">
+          <label for="company">Company</label>
+          <input id="company" name="company" autocomplete="organization">
+        </div>
+        <div class="field">
+          <label for="status">Status</label>
+          <select id="status" name="status">
+            {% for value, label in status_choices %}
+            <option value="{{ value }}">{{ label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="actions">
+          <button class="btn btn-primary" type="submit" id="submit-btn">Save customer</button>
+          <span class="form-message" id="form-message" role="status" aria-live="polite"></span>
+        </div>
+      </form>
+    </section>
+
+    <section class="card">
+      <div class="card-head">
+        <h2>Customers</h2>
+        <div class="toolbar">
+          <input id="search" type="search" placeholder="Search name, email, company" style="min-width: 240px;">
+          <select id="status-filter" style="width: auto;">
+            <option value="">All statuses</option>
+            {% for value, label in status_choices %}
+            <option value="{{ value }}">{{ label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+
+      <div id="loading" class="hidden">
+        <div class="skeleton-row" style="width: 62%"></div>
+        <div class="skeleton-row" style="width: 84%"></div>
+        <div class="skeleton-row" style="width: 48%"></div>
+      </div>
+
+      <div id="error" class="state hidden">
+        <h3>Could not reach the API</h3>
+        <p id="error-detail">The request to /api/customers/ failed.</p>
+        <button class="btn" id="retry-btn" type="button">Try again</button>
+      </div>
+
+      <div id="empty" class="state hidden">
+        <h3>No customers yet</h3>
+        <p>Add one with the form above, or POST to <code>/api/customers/</code>.</p>
+      </div>
+
+      <div id="table-wrap" class="hidden" style="overflow-x: auto;">
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th class="col-company">Company</th>
+              <th class="col-phone">Phone</th>
+              <th>Status</th>
+              <th class="col-created">Created</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="customer-rows"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <footer class="page">
+      Endpoints: <code>/api/customers/</code> &middot; <code>/api/customers/stats/</code> &middot; <code>/admin/</code>
+    </footer>
+  </div>
+
+  <script>
+    const API = '/api/customers/';
+    const nodes = {
+      loading: document.getElementById('loading'),
+      error: document.getElementById('error'),
+      errorDetail: document.getElementById('error-detail'),
+      empty: document.getElementById('empty'),
+      tableWrap: document.getElementById('table-wrap'),
+      rows: document.getElementById('customer-rows'),
+      search: document.getElementById('search'),
+      statusFilter: document.getElementById('status-filter'),
+      form: document.getElementById('customer-form'),
+      formMessage: document.getElementById('form-message'),
+      submitBtn: document.getElementById('submit-btn'),
+      retryBtn: document.getElementById('retry-btn'),
+    };
+
+    const csrfToken = nodes.form.querySelector('[name=csrfmiddlewaretoken]').value;
+
+    function show(state) {
+      for (const key of ['loading', 'error', 'empty', 'tableWrap']) {
+        nodes[key].classList.toggle('hidden', key !== state);
+      }
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? '').replace(/[&<>"']/g, (character) => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
+      })[character]);
+    }
+
+    function formatDate(value) {
+      if (!value) return '—';
+      return new Date(value).toLocaleDateString(undefined, {
+        year: 'numeric', month: 'short', day: 'numeric',
+      });
+    }
+
+    function renderRows(customers) {
+      nodes.rows.innerHTML = customers.map((customer) => `
+        <tr>
+          <td>
+            <div class="name">${escapeHtml(customer.full_name)}</div>
+            <div class="meta">${escapeHtml(customer.email)}</div>
+          </td>
+          <td class="col-company">${escapeHtml(customer.company) || '<span class="meta">—</span>'}</td>
+          <td class="col-phone">${escapeHtml(customer.phone_number) || '<span class="meta">—</span>'}</td>
+          <td><span class="pill ${escapeHtml(customer.status)}">${escapeHtml(customer.status)}</span></td>
+          <td class="col-created meta">${formatDate(customer.created_at)}</td>
+          <td style="text-align: right;">
+            <button class="row-delete" type="button" data-id="${customer.id}">Delete</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    async function loadStats() {
+      try {
+        const response = await fetch(`${API}stats/`);
+        if (!response.ok) return;
+        const data = await response.json();
+        document.querySelector('[data-stat=total]').textContent = data.total;
+        for (const [status, count] of Object.entries(data.by_status)) {
+          const node = document.querySelector(`[data-stat=${status}]`);
+          if (node) node.textContent = count;
+        }
+      } catch (error) {
+        /* Stats are decorative; the table surfaces real failures. */
+      }
+    }
+
+    async function loadCustomers() {
+      show('loading');
+      const params = new URLSearchParams();
+      if (nodes.search.value.trim()) params.set('search', nodes.search.value.trim());
+      if (nodes.statusFilter.value) params.set('status', nodes.statusFilter.value);
+
+      try {
+        const response = await fetch(`${API}?${params.toString()}`);
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const data = await response.json();
+        const customers = data.results ?? data;
+        if (!customers.length) {
+          show('empty');
+        } else {
+          renderRows(customers);
+          show('tableWrap');
+        }
+      } catch (error) {
+        nodes.errorDetail.textContent = `The request to ${API} failed (${error.message}).`;
+        show('error');
+      }
+      loadStats();
+    }
+
+    nodes.form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const payload = Object.fromEntries(new FormData(nodes.form).entries());
+      delete payload.csrfmiddlewaretoken;
+
+      nodes.submitBtn.disabled = true;
+      nodes.formMessage.className = 'form-message';
+      nodes.formMessage.textContent = 'Saving…';
+
+      try {
+        const response = await fetch(API, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrfToken },
+          body: JSON.stringify(payload),
+        });
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok) {
+          const detail = Object.entries(data)
+            .map(([field, messages]) => `${field}: ${[].concat(messages).join(' ')}`)
+            .join(' · ');
+          throw new Error(detail || `HTTP ${response.status}`);
+        }
+        nodes.formMessage.className = 'form-message ok';
+        nodes.formMessage.textContent = `Saved ${data.full_name}.`;
+        nodes.form.reset();
+        loadCustomers();
+      } catch (error) {
+        nodes.formMessage.className = 'form-message error';
+        nodes.formMessage.textContent = error.message;
+      } finally {
+        nodes.submitBtn.disabled = false;
+      }
+    });
+
+    nodes.rows.addEventListener('click', async (event) => {
+      const button = event.target.closest('.row-delete');
+      if (!button) return;
+      button.disabled = true;
+      try {
+        const response = await fetch(`${API}${button.dataset.id}/`, {
+          method: 'DELETE',
+          headers: { 'X-CSRFToken': csrfToken },
+        });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        loadCustomers();
+      } catch (error) {
+        button.disabled = false;
+        nodes.formMessage.className = 'form-message error';
+        nodes.formMessage.textContent = `Delete failed: ${error.message}`;
+      }
+    });
+
+    let searchTimer;
+    nodes.search.addEventListener('input', () => {
+      clearTimeout(searchTimer);
+      searchTimer = setTimeout(loadCustomers, 250);
+    });
+    nodes.statusFilter.addEventListener('change', loadCustomers);
+    nodes.retryBtn.addEventListener('click', loadCustomers);
+
+    loadCustomers();
+  </script>
+</body>
+</html>
