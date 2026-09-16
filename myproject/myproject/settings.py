@@ -29,13 +29,30 @@ SECRET_KEY = os.environ.get(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DJANGO_DEBUG', 'True') == 'True'
 
-# The dev server is reached by EC2 public IP, so hosts come from the environment
-# and fall back to permissive values that only make sense while DEBUG is on.
-ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', '*').split(',')
+# Public address of the EC2 instance this project is served from. The dev server
+# still binds 0.0.0.0 (a socket can only bind a local interface), so this is the
+# address clients use, not an address to bind.
+EC2_PUBLIC_IP = os.environ.get('DJANGO_EC2_PUBLIC_IP', '54.176.159.190')
+SERVER_PORT = os.environ.get('DJANGO_SERVER_PORT', '8000')
+
+ALLOWED_HOSTS = os.environ.get(
+    'DJANGO_ALLOWED_HOSTS',
+    f'{EC2_PUBLIC_IP},localhost,127.0.0.1,0.0.0.0',
+).split(',')
+
+# Any host is accepted while debugging so the app also answers on a hostname or
+# a rotated public IP without a settings change.
+if DEBUG:
+    ALLOWED_HOSTS.append('*')
 
 CSRF_TRUSTED_ORIGINS = [
     origin
-    for origin in os.environ.get('DJANGO_CSRF_TRUSTED_ORIGINS', '').split(',')
+    for origin in os.environ.get(
+        'DJANGO_CSRF_TRUSTED_ORIGINS',
+        f'http://{EC2_PUBLIC_IP}:{SERVER_PORT},'
+        f'http://localhost:{SERVER_PORT},'
+        f'http://127.0.0.1:{SERVER_PORT}',
+    ).split(',')
     if origin
 ]
 

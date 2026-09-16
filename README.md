@@ -59,11 +59,28 @@ python3 manage.py seed_customers
 python3 manage.py runserver 0.0.0.0:8000
 ```
 
-Then open `http://<Your-EC2-Public-IP>:8000/` for the dashboard,
-`http://<Your-EC2-Public-IP>:8000/api/customers/` for the browsable API, and
-`http://<Your-EC2-Public-IP>:8000/admin/` to inspect the `customers_customer` table.
+From the repository root, `./runserver.sh` does steps 2 and 7 in one go and prints
+every URL the server answers on.
 
-On a local machine use `http://127.0.0.1:8000` instead of the EC2 public IP.
+Then open:
+
+- `http://54.176.159.190:8000/` — dashboard
+- `http://54.176.159.190:8000/api/customers/` — browsable API
+- `http://54.176.159.190:8000/admin/` — inspect the `customers_customer` table
+
+On a local machine use `http://127.0.0.1:8000` instead of the public IP.
+
+### Why the server binds `0.0.0.0` and not `54.176.159.190`
+
+`python3 manage.py runserver 54.176.159.190:8000` fails with
+`Error: That IP address can't be assigned to.` A listening socket can only bind an
+address that exists on a local network interface. An EC2 instance's public IP is not
+configured on its NIC — AWS maps it to the instance's private address — so the public
+IP is an address clients *connect to*, never one the process binds. `0.0.0.0` means
+"every interface on this machine", which is what makes the public IP reachable.
+
+If `http://54.176.159.190:8000/` times out, the server is fine and the network is
+blocking you: open inbound TCP 8000 to your IP in the instance's EC2 security group.
 
 ### Admin credentials used in this environment
 
@@ -134,8 +151,17 @@ an EC2 box:
 | --- | --- | --- |
 | `DJANGO_SECRET_KEY` | insecure dev key | Signing key |
 | `DJANGO_DEBUG` | `True` | Set to `False` for anything public-facing |
-| `DJANGO_ALLOWED_HOSTS` | `*` | Comma-separated hostnames/IPs |
-| `DJANGO_CSRF_TRUSTED_ORIGINS` | empty | Comma-separated origins, e.g. `http://1.2.3.4:8000` |
+| `DJANGO_EC2_PUBLIC_IP` | `54.176.159.190` | Public address used for allowed hosts and CSRF origins |
+| `DJANGO_SERVER_PORT` | `8000` | Port used by `runserver.sh` and the CSRF origins |
+| `DJANGO_ALLOWED_HOSTS` | the public IP plus localhost | Comma-separated hostnames/IPs; overrides the default list |
+| `DJANGO_CSRF_TRUSTED_ORIGINS` | the public IP and localhost on the server port | Comma-separated origins, e.g. `http://1.2.3.4:8000` |
+
+If the instance's public IP changes, set `DJANGO_EC2_PUBLIC_IP` rather than editing
+settings:
+
+```bash
+DJANGO_EC2_PUBLIC_IP=203.0.113.25 ./runserver.sh
+```
 
 ## Handy commands
 
