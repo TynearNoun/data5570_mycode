@@ -16,7 +16,7 @@ from the API so you can see traffic hitting the endpoint in a browser.
 .
 ├── myvenv/                     # virtual environment (git-ignored)
 ├── requirements.txt
-├── plot-log/                   # Expo app (not inside the Django project)
+├── your-expo-project/          # Expo app (not inside the Django project)
 └── myproject/
     ├── manage.py
     ├── db.sqlite3              # created by migrate (git-ignored)
@@ -35,10 +35,10 @@ from the API so you can see traffic hitting the endpoint in a browser.
 
 ## Expo app
 
-`plot-log` is the Expo field notebook, created with Create Expo Stack. It sits next to `myproject`, not inside it. The plot board and the sighting form share a Redux store.
+`your-expo-project` is the Expo field notebook, created with Create Expo Stack. It sits next to `myproject`, not inside it. The plot board and the sighting form share a Redux store.
 
 ```bash
-cd plot-log
+cd your-expo-project
 npm install
 npm run web
 ```
