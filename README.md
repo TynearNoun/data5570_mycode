@@ -17,7 +17,7 @@ from the API so you can see traffic hitting the endpoint in a browser.
 ├── myvenv/                     # virtual environment (git-ignored)
 ├── requirements.txt
 ├── expo-app/                   # Expo app (not inside the Django project)
-└── myproject/
+└── django/
     ├── manage.py
     ├── db.sqlite3              # created by migrate (git-ignored)
     ├── myproject/settings.py   # INSTALLED_APPS: rest_framework, corsheaders, customers
@@ -35,7 +35,7 @@ from the API so you can see traffic hitting the endpoint in a browser.
 
 ## Expo app
 
-`expo-app` is the Expo field notebook, created with Create Expo Stack. It sits next to `myproject`, not inside it. The plot board and the sighting form share a Redux store.
+`expo-app` is the Expo field notebook, created with Create Expo Stack. It sits next to `django`, not inside it. The plot board and the sighting form share a Redux store.
 
 ```bash
 cd expo-app
@@ -58,7 +58,7 @@ source myvenv/bin/activate
 python3 -m pip install -r requirements.txt
 
 # 4. Create the SQLite tables
-cd myproject
+cd django
 python3 manage.py makemigrations
 python3 manage.py migrate
 
@@ -151,7 +151,7 @@ python3 manage.py shell
 
 ```bash
 source myvenv/bin/activate
-cd myproject
+cd django
 python3 manage.py test
 ```
 

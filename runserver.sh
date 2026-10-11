@@ -32,5 +32,5 @@ echo "If the public URL times out, open TCP $PORT to your IP in the instance's"
 echo "EC2 security group inbound rules."
 echo
 
-cd myproject
+cd django
 exec python3 manage.py runserver "0.0.0.0:$PORT"
