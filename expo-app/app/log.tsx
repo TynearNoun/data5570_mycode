@@ -4,7 +4,7 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { Field } from '@/components/Field';
 import { useAppDispatch } from '@/state/hooks';
-import { addPlot } from '@/state/plotsReducer';
+import { createPlot } from '@/state/plotsReducer';
 
 export default function LogSighting() {
   const dispatch = useAppDispatch();
@@ -14,8 +14,9 @@ export default function LogSighting() {
   const [countText, setCountText] = useState('');
   const [note, setNote] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
 
-  function onSave() {
+  async function onSave() {
     const siteValue = site.trim();
     const speciesValue = species.trim();
     const count = Number(countText);
@@ -30,16 +31,22 @@ export default function LogSighting() {
       return;
     }
 
-    dispatch(
-      addPlot({
-        site: siteValue,
-        species: speciesValue,
-        count,
-        note: note.trim(),
-      })
-    );
+    setSaving(true);
     setError(null);
-    router.replace('/');
+    try {
+      await dispatch(
+        createPlot({
+          site: siteValue,
+          species: speciesValue,
+          count,
+          note: note.trim(),
+        })
+      ).unwrap();
+      router.replace('/');
+    } catch (saveError) {
+      setError(typeof saveError === 'string' ? saveError : 'Could not save that sighting.');
+      setSaving(false);
+    }
   }
 
   return (
@@ -52,7 +59,8 @@ export default function LogSighting() {
         <View style={styles.intro}>
           <Text style={styles.heading}>Add a count to the board</Text>
           <Text style={styles.sentence}>
-            Write down the site, what you saw, and how many. Saving adds the count to the board.
+            Write down the site, what you saw, and how many. Saving posts the count to the field
+            server, then the board reads it back from the same store.
           </Text>
         </View>
 
@@ -84,8 +92,15 @@ export default function LogSighting() {
           </View>
         ) : null}
 
-        <Pressable accessibilityRole="button" onPress={onSave} style={styles.save}>
-          <Text style={styles.saveText}>Save sighting</Text>
+        <Pressable
+          accessibilityRole="button"
+          accessibilityState={{ disabled: saving }}
+          disabled={saving}
+          onPress={() => {
+            void onSave();
+          }}
+          style={[styles.save, saving && styles.saveDisabled]}>
+          <Text style={styles.saveText}>{saving ? 'Saving…' : 'Save sighting'}</Text>
         </Pressable>
         <Link href="/" asChild>
           <Pressable accessibilityRole="button" style={styles.back}>
@@ -143,6 +158,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#1f3d2b',
     borderRadius: 999,
     paddingVertical: 14,
+  },
+  saveDisabled: {
+    opacity: 0.6,
   },
   saveText: {
     color: '#f6f1e6',

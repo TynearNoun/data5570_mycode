@@ -4,12 +4,18 @@ import type { PlotEntry } from '@/state/plotsReducer';
 
 type PlotCardProps = {
   entry: PlotEntry;
-  onToggleFlag: (id: string) => void;
-  onRemove: (id: string) => void;
+  pending: boolean;
+  onToggleFlag: (id: number) => void;
+  onRemove: (id: number) => void;
 };
 
-export function PlotCard({ entry, onToggleFlag, onRemove }: PlotCardProps) {
-  const flagLabel = entry.flagged ? 'Clear flag' : 'Flag for review';
+export function PlotCard({ entry, pending, onToggleFlag, onRemove }: PlotCardProps) {
+  let flagLabel = 'Flag for review';
+  if (pending) {
+    flagLabel = 'Saving…';
+  } else if (entry.flagged) {
+    flagLabel = 'Clear flag';
+  }
 
   return (
     <View style={[styles.card, entry.flagged && styles.cardFlagged]}>
@@ -28,16 +34,24 @@ export function PlotCard({ entry, onToggleFlag, onRemove }: PlotCardProps) {
       <View style={styles.actions}>
         <Pressable
           accessibilityRole="button"
+          accessibilityState={{ disabled: pending }}
+          disabled={pending}
           onPress={() => onToggleFlag(entry.id)}
-          style={[styles.action, entry.flagged ? styles.actionMuted : styles.actionFlag]}>
+          style={[
+            styles.action,
+            entry.flagged ? styles.actionMuted : styles.actionFlag,
+            pending && styles.actionPending,
+          ]}>
           <Text style={[styles.actionText, entry.flagged && styles.actionTextMuted]}>
             {flagLabel}
           </Text>
         </Pressable>
         <Pressable
           accessibilityRole="button"
+          accessibilityState={{ disabled: pending }}
+          disabled={pending}
           onPress={() => onRemove(entry.id)}
-          style={[styles.action, styles.actionRemove]}>
+          style={[styles.action, styles.actionRemove, pending && styles.actionPending]}>
           <Text style={styles.removeText}>Remove</Text>
         </Pressable>
       </View>
@@ -124,6 +138,9 @@ const styles = StyleSheet.create({
   },
   actionRemove: {
     backgroundColor: '#f8ece8',
+  },
+  actionPending: {
+    opacity: 0.55,
   },
   actionText: {
     color: '#f6f1e6',

@@ -4,7 +4,7 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { PlotList } from '@/components/PlotList';
 import { useAppDispatch, useAppSelector } from '@/state/hooks';
-import { removePlot, toggleFlag, type PlotEntry } from '@/state/plotsReducer';
+import { deletePlot, fetchPlots, togglePlotFlag, type PlotEntry } from '@/state/plotsReducer';
 
 type BoardSummary = {
   plots: number;
@@ -27,23 +27,39 @@ function summarize(entries: PlotEntry[]): BoardSummary {
 
 export default function PlotBoard() {
   const entries = useAppSelector((state) => state.plots.entries);
+  const status = useAppSelector((state) => state.plots.status);
+  const error = useAppSelector((state) => state.plots.error);
+  const pendingIds = useAppSelector((state) => state.plots.pendingIds);
   const dispatch = useAppDispatch();
   const [flaggedOnly, setFlaggedOnly] = useState(false);
   const summary = summarize(entries);
+  const loading = (status === 'idle' || status === 'loading') && entries.length === 0;
+  let boardSentence = summary.sentence;
+  if (loading) {
+    boardSentence = 'Loading the latest counts from the field server.';
+  } else if (status === 'error' && entries.length === 0) {
+    boardSentence = 'The board is waiting on the field server.';
+  }
+
+  useEffect(() => {
+    void dispatch(fetchPlots());
+  }, [dispatch]);
 
   useEffect(() => {
     if (typeof document === 'undefined') {
       return;
     }
 
-    document.title = `Plot Log · ${summary.sentence}`;
-  }, [summary.sentence]);
+    document.title = loading ? 'Plot Log · Loading' : `Plot Log · ${summary.sentence}`;
+  }, [loading, summary.sentence]);
 
   const visibleEntries = flaggedOnly ? entries.filter((entry) => entry.flagged) : entries;
-  const emptyMessage =
-    entries.length === 0
-      ? 'The board is empty. Log a sighting to start a new count.'
-      : 'No plots are flagged. Show every plot to keep counting.';
+  let emptyMessage = 'No plots are flagged. Show every plot to keep counting.';
+  if (status === 'error' && entries.length === 0) {
+    emptyMessage = 'Nothing has loaded from the field server yet.';
+  } else if (entries.length === 0) {
+    emptyMessage = 'The board is empty. Log a sighting to start a new count.';
+  }
 
   return (
     <View style={styles.screen}>
@@ -52,7 +68,10 @@ export default function PlotBoard() {
         <View style={styles.intro}>
           <Text style={styles.kicker}>Field notebook</Text>
           <Text style={styles.heading}>What is on the plots today</Text>
-          <Text style={styles.sentence}>{summary.sentence}</Text>
+          <Text style={styles.sentence}>{boardSentence}</Text>
+          <Text style={styles.meta}>
+            Counts are stored on the Django server and shared across both pages.
+          </Text>
         </View>
 
         <View style={styles.stats}>
@@ -86,12 +105,31 @@ export default function PlotBoard() {
           </Link>
         </View>
 
-        <PlotList
-          entries={visibleEntries}
-          emptyMessage={emptyMessage}
-          onRemove={(id) => dispatch(removePlot(id))}
-          onToggleFlag={(id) => dispatch(toggleFlag(id))}
-        />
+        {error ? (
+          <View style={styles.errorBox}>
+            <Text style={styles.errorText}>{error}</Text>
+            <Pressable
+              accessibilityRole="button"
+              onPress={() => dispatch(fetchPlots())}
+              style={styles.retry}>
+              <Text style={styles.retryText}>Try again</Text>
+            </Pressable>
+          </View>
+        ) : null}
+
+        {loading ? (
+          <View style={styles.empty}>
+            <Text style={styles.emptyText}>Loading plots…</Text>
+          </View>
+        ) : (
+          <PlotList
+            entries={visibleEntries}
+            emptyMessage={emptyMessage}
+            pendingIds={pendingIds}
+            onRemove={(id) => dispatch(deletePlot(id))}
+            onToggleFlag={(id) => dispatch(togglePlotFlag(id))}
+          />
+        )}
       </ScrollView>
     </View>
   );
@@ -134,8 +172,49 @@ const styles = StyleSheet.create({
     fontSize: 15,
     lineHeight: 22,
   },
+  meta: {
+    color: '#6d675c',
+    fontSize: 13,
+    lineHeight: 18,
+  },
+  errorBox: {
+    backgroundColor: '#f8ece8',
+    borderRadius: 12,
+    gap: 10,
+    padding: 12,
+  },
+  errorText: {
+    color: '#8c3a32',
+    fontSize: 14,
+    lineHeight: 20,
+  },
+  retry: {
+    alignSelf: 'flex-start',
+    backgroundColor: '#fffdf8',
+    borderRadius: 999,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+  },
+  retryText: {
+    color: '#8c3a32',
+    fontSize: 14,
+    fontWeight: '700',
+  },
+  empty: {
+    backgroundColor: '#fffdf8',
+    borderColor: '#e2d8c4',
+    borderRadius: 16,
+    borderWidth: 1,
+    padding: 20,
+  },
+  emptyText: {
+    color: '#5c564c',
+    fontSize: 15,
+    lineHeight: 22,
+  },
   stats: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     gap: 8,
   },
   stat: {
@@ -143,7 +222,8 @@ const styles = StyleSheet.create({
     borderColor: '#e2d8c4',
     borderRadius: 14,
     borderWidth: 1,
-    flex: 1,
+    flexBasis: 120,
+    flexGrow: 1,
     gap: 2,
     paddingHorizontal: 12,
     paddingVertical: 12,

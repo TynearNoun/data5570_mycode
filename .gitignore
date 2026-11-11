@@ -24,3 +24,5 @@ staticfiles/
 .vscode/
 .idea/
 .DS_Store
+
+agent-tools/

@@ -7,11 +7,18 @@ import { PlotCard } from './PlotCard';
 type PlotListProps = {
   entries: PlotEntry[];
   emptyMessage: string;
-  onToggleFlag: (id: string) => void;
-  onRemove: (id: string) => void;
+  pendingIds: number[];
+  onToggleFlag: (id: number) => void;
+  onRemove: (id: number) => void;
 };
 
-export function PlotList({ entries, emptyMessage, onToggleFlag, onRemove }: PlotListProps) {
+export function PlotList({
+  entries,
+  emptyMessage,
+  pendingIds,
+  onToggleFlag,
+  onRemove,
+}: PlotListProps) {
   if (entries.length === 0) {
     return (
       <View style={styles.empty}>
@@ -23,7 +30,13 @@ export function PlotList({ entries, emptyMessage, onToggleFlag, onRemove }: Plot
   return (
     <View style={styles.list}>
       {entries.map((entry) => (
-        <PlotCard key={entry.id} entry={entry} onToggleFlag={onToggleFlag} onRemove={onRemove} />
+        <PlotCard
+          key={entry.id}
+          entry={entry}
+          pending={pendingIds.includes(entry.id)}
+          onToggleFlag={onToggleFlag}
+          onRemove={onRemove}
+        />
       ))}
     </View>
   );
