@@ -8,6 +8,6 @@ class RallyConfig(AppConfig):
     def ready(self):
         from django.contrib import admin
 
-        admin.site.site_header = "Rally"
-        admin.site.site_title = "Rally admin"
+        admin.site.site_header = "Daily Challenge"
+        admin.site.site_title = "Daily Challenge admin"
         admin.site.index_title = "Daily challenges"

@@ -1,4 +1,4 @@
-"""Django settings for the Rally daily-challenge API."""
+"""Django settings for the Daily Challenge API."""
 
 import os
 from pathlib import Path

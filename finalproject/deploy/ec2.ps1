@@ -1,4 +1,4 @@
-# Deploy Rally's Django API to the class EC2 instance.
+# Deploy the Daily Challenge Django API to the class EC2 instance.
 # Run this from PowerShell on the machine that has the key pair.
 #
 #   powershell -ExecutionPolicy Bypass -File .\deploy\ec2.ps1

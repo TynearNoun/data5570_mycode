@@ -11,7 +11,7 @@ export default function Index() {
   return (
     <View style={{ flex: 1, alignItems: "center", justifyContent: "center", gap: 12, backgroundColor: theme.bg }}>
       <ActivityIndicator color={theme.clay} />
-      <Text style={{ fontFamily: font.display, fontSize: 36, color: theme.ink }}>Rally</Text>
+      <Text style={{ fontFamily: font.display, fontSize: 36, color: theme.ink }}>Daily Challenge</Text>
       <Text style={{ fontFamily: font.body, color: theme.muted }}>Checking your session</Text>
     </View>
   );

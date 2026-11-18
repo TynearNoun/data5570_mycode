@@ -30,7 +30,7 @@ python manage.py seed_demo
 
 sudo tee /etc/systemd/system/rally-api.service >/dev/null <<UNIT
 [Unit]
-Description=Rally daily challenge API
+Description=Daily Challenge API
 After=network.target
 
 [Service]
@@ -50,4 +50,4 @@ sudo systemctl daemon-reload
 sudo systemctl enable rally-api
 sudo systemctl restart rally-api
 sudo systemctl --no-pager --full status rally-api
-echo "Rally API should be listening on port 8000."
+echo "Daily Challenge API should be listening on port 8000."

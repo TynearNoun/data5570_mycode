@@ -1,7 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const TOKEN_KEY = "rally.token";
-const GROUP_KEY = "rally.groupId";
+const TOKEN_KEY = "dailychallenge.token";
+const GROUP_KEY = "dailychallenge.groupId";
 
 export async function loadToken(): Promise<string | null> {
   return AsyncStorage.getItem(TOKEN_KEY);

@@ -38,7 +38,7 @@ export default function SignupScreen() {
   return (
     <View style={{ flex: 1, backgroundColor: theme.bg, justifyContent: "center", padding: wide ? 48 : 20 }}>
       <View style={{ width: "100%", maxWidth: 480, alignSelf: "center", gap: 14 }}>
-        <Text style={{ fontFamily: font.semibold, color: theme.clay, letterSpacing: 1.2 }}>RALLY</Text>
+        <Text style={{ fontFamily: font.semibold, color: theme.clay, letterSpacing: 1.2 }}>DAILY CHALLENGE</Text>
         <Text style={{ fontFamily: font.display, fontSize: 40, color: theme.ink }}>Make an account</Text>
         <Text style={{ fontFamily: font.body, color: theme.muted, fontSize: 16 }}>
           You’ll start with no circle. Create one, or join Weeknight Crew with the code WEEKNIGHT.

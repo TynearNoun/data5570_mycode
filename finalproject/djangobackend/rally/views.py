@@ -101,7 +101,7 @@ class HealthView(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request):
-        return Response({"status": "ok", "service": "rally"})
+        return Response({"status": "ok", "service": "dailychallenge"})
 
 
 class RegisterView(APIView):

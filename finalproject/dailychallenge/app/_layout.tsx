@@ -61,7 +61,7 @@ function Session({ children }: { children: ReactNode }) {
           pointerEvents="none"
           style={{ position: "absolute", top: 24, left: 20 }}
         >
-          <Text style={{ fontFamily: font.body, color: theme.muted }}>Opening Rally</Text>
+          <Text style={{ fontFamily: font.body, color: theme.muted }}>Opening Daily Challenge</Text>
         </View>
       ) : null}
     </View>

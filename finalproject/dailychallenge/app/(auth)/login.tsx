@@ -35,7 +35,7 @@ export default function LoginScreen() {
           gap: 20,
         }}
       >
-        <Text style={{ fontFamily: font.semibold, color: "#E7D3C4", letterSpacing: 1.6 }}>RALLY</Text>
+        <Text style={{ fontFamily: font.semibold, color: "#E7D3C4", letterSpacing: 1.2 }}>DAILY CHALLENGE</Text>
         <View style={{ gap: 12, maxWidth: 460 }}>
           <Text style={{ fontFamily: font.display, fontSize: wide ? 58 : 40, color: theme.cream, lineHeight: wide ? 62 : 44 }}>
             A small dare, every day.

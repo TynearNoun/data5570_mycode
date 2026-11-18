@@ -39,7 +39,7 @@ class RallyApiTests(APITestCase):
     def test_health(self):
         response = self.client.get("/api/health/")
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data["service"], "rally")
+        self.assertEqual(response.data["service"], "dailychallenge")
 
     def test_register_login_me_and_logout(self):
         created = self.register("nova", "Nova Ellis")

@@ -1,6 +1,6 @@
-# Rally
+# Daily Challenge
 
-Rally is a daily challenge app for a circle of friends. Each group gets one dare a day. Members send proof (words, a photo, or a video link), react to each other, talk in the group chat, and climb a board of points and streaks.
+Daily Challenge is an app for a circle of friends. Each group gets one dare a day. Members send proof (words, a photo, or a video link), react to each other, talk in the group chat, and climb a board of points and streaks. The Expo project is `dailychallenge`.
 
 The problem it takes on is a quiet group chat with nothing to do. The people it is for are friends who want a small shared plan that resets every day.
 
@@ -47,7 +47,7 @@ python manage.py runserver 0.0.0.0:8042
 
 Health check: `http://127.0.0.1:8042/api/health/`
 
-App, from `finalproject/expo-app`:
+App, from `finalproject/dailychallenge`:
 
 ```bash
 npm install
@@ -127,7 +127,7 @@ A missing token on a protected route is 401. A route you can see but do not belo
 
 ## Redux
 
-`expo-app/state/store.ts` builds the store. Slices:
+`dailychallenge/state/store.ts` builds the store. Slices:
 
 - `authSlice` — login, register, logout, and profile update thunks.
 - `groupsSlice` — list, create, join, and the selected group.
@@ -161,7 +161,7 @@ Points are not a column someone can edit out of band. Deleting a reaction remove
 - `djangobackend/rally/models.py` — tables.
 - `djangobackend/rally/views.py` and `urls.py` — the API.
 - `djangobackend/rally/services.py` — points, streaks, the daily prompt, optional S3.
-- `expo-app/app/(auth)` — sign in and sign up.
-- `expo-app/app/(app)` — Today, Groups, Create, Board, Chat, Account.
-- `expo-app/components` — shared buttons, fields, cards, the shell, proof, and submission cards.
+- `dailychallenge/app/(auth)` — sign in and sign up.
+- `dailychallenge/app/(app)` — Today, Groups, Create, Board, Chat, Account.
+- `dailychallenge/components` — shared buttons, fields, cards, the shell, proof, and submission cards.
 - `deploy/ec2.ps1` — ship the API to 13.56.184.13.

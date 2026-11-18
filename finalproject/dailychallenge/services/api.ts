@@ -29,7 +29,7 @@ export function errorText(error: unknown, fallback: string): string {
 function networkMessage(error: unknown): string {
   const message = error instanceof Error ? error.message : "";
   if (message === "Failed to fetch" || message.includes("Network request failed")) {
-    return `Rally could not reach the API at ${API_HOST_LABEL}. Start Django, or open port 8000 on 13.56.184.13.`;
+    return `Daily Challenge could not reach the API at ${API_HOST_LABEL}. Start Django, or open port 8000 on 13.56.184.13.`;
   }
   return message || "The request failed.";
 }

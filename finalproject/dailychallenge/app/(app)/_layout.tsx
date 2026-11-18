@@ -11,7 +11,7 @@ export default function AppLayout() {
     return (
       <View style={{ flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: theme.bg, gap: 10 }}>
         <ActivityIndicator color={theme.clay} />
-        <Text style={{ fontFamily: font.body, color: theme.muted }}>Opening Rally</Text>
+        <Text style={{ fontFamily: font.body, color: theme.muted }}>Opening Daily Challenge</Text>
       </View>
     );
   }

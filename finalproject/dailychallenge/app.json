@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "Rally",
-    "slug": "rally",
+    "name": "Daily Challenge",
+    "slug": "dailychallenge",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "rally",
+    "scheme": "dailychallenge",
     "userInterfaceStyle": "light",
     "ios": {
       "supportsTablet": true
@@ -29,7 +29,7 @@
       [
         "expo-image-picker",
         {
-          "photosPermission": "Rally uses a photo you choose as proof for a challenge."
+          "photosPermission": "Daily Challenge uses a photo you choose as proof for a challenge."
         }
       ],
       [
