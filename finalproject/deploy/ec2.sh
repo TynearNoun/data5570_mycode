@@ -23,7 +23,8 @@ tar -czf "$ARCHIVE" \
   --exclude=media \
   --exclude=.env \
   -C "$ROOT" .
+sed 's/\r$//' "$(dirname "$0")/remote-setup.sh" > "${ARCHIVE}.setup.sh"
 scp -i "$KEY" -o StrictHostKeyChecking=accept-new "$ARCHIVE" "${USER_NAME}@${SERVER}:/tmp/rally-finalproject.tgz"
-scp -i "$KEY" -o StrictHostKeyChecking=accept-new "$(dirname "$0")/remote-setup.sh" "${USER_NAME}@${SERVER}:/tmp/rally-remote-setup.sh"
-ssh -i "$KEY" -o StrictHostKeyChecking=accept-new "${USER_NAME}@${SERVER}" "bash /tmp/rally-remote-setup.sh"
+scp -i "$KEY" -o StrictHostKeyChecking=accept-new "${ARCHIVE}.setup.sh" "${USER_NAME}@${SERVER}:/tmp/rally-remote-setup.sh"
+ssh -i "$KEY" -o StrictHostKeyChecking=accept-new "${USER_NAME}@${SERVER}" "sed -i 's/\r\$//' /tmp/rally-remote-setup.sh && bash /tmp/rally-remote-setup.sh"
 echo "API: http://${SERVER}:8000/api/health/"

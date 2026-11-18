@@ -34,9 +34,18 @@ tar -czf $Archive `
   --exclude=.env `
   -C $ProjectRoot .
 
+# Windows git often checks shell scripts out with CRLF. Bash on the instance
+# then fails on "set -o pipefail". Upload a Unix copy.
+$SetupUpload = Join-Path $env:TEMP "rally-remote-setup.sh"
+$SetupText = [IO.File]::ReadAllText((Join-Path $PSScriptRoot "remote-setup.sh")) -replace "`r", ""
+$Utf8NoBom = New-Object System.Text.UTF8Encoding $false
+[IO.File]::WriteAllText($SetupUpload, $SetupText, $Utf8NoBom)
+
 scp -i $Key -o StrictHostKeyChecking=accept-new $Archive "${UserName}@${Server}:/tmp/rally-finalproject.tgz"
-scp -i $Key -o StrictHostKeyChecking=accept-new (Join-Path $PSScriptRoot "remote-setup.sh") "${UserName}@${Server}:/tmp/rally-remote-setup.sh"
-ssh -i $Key -o StrictHostKeyChecking=accept-new "${UserName}@${Server}" "bash /tmp/rally-remote-setup.sh"
+scp -i $Key -o StrictHostKeyChecking=accept-new $SetupUpload "${UserName}@${Server}:/tmp/rally-remote-setup.sh"
+ssh -i $Key -o StrictHostKeyChecking=accept-new "${UserName}@${Server}" "sed -i 's/\r$//' /tmp/rally-remote-setup.sh && bash /tmp/rally-remote-setup.sh"
+if ($LASTEXITCODE -ne 0) {
+  Write-Error "Remote setup failed with exit code $LASTEXITCODE"
+}
 
 Write-Host "API: http://${Server}:8000/api/health/"
-Write-Host "Open TCP 8000 in the instance security group if that URL does not load."
