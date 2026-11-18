@@ -2,10 +2,32 @@ import { Platform } from "react-native";
 
 import type { PhotoPick } from "@/services/types";
 
-const configured = process.env.EXPO_PUBLIC_DJANGO_API_URL?.replace(/\/$/, "");
+const configured = process.env.EXPO_PUBLIC_DJANGO_API_URL?.replace(/\/$/, "") ?? "";
 
-/** Class API. Override with EXPO_PUBLIC_DJANGO_API_URL for a local Django server. */
-export const API_BASE = configured || "http://13.56.184.13:8000/api";
+function pageOrigin(): string | null {
+  const origin = (globalThis as { location?: { origin?: string } }).location?.origin;
+  return origin || null;
+}
+
+/** A localhost API address is the computer that bundled the app, not the browser. */
+function pointsAtThisMachine(url: string): boolean {
+  return url === "" || /^https?:\/\/(127\.0\.0\.1|localhost)(:\d+)?(\/|$)/.test(url);
+}
+
+/**
+ * On the web, local Django is reached through the Expo server (`/api` on the
+ * same host as the page). A phone or a deployed host uses EXPO_PUBLIC_DJANGO_API_URL,
+ * or the class EC2 instance when that variable is unset.
+ */
+export function resolveApiBase(): string {
+  if (Platform.OS === "web" && pointsAtThisMachine(configured)) {
+    const origin = pageOrigin();
+    if (origin) return `${origin}/api`;
+  }
+  return configured || "http://13.56.184.13:8000/api";
+}
+
+export const API_BASE = resolveApiBase();
 
 const hostMatch = API_BASE.match(/^https?:\/\/([^/]+)/);
 export const API_HOST_LABEL = hostMatch?.[1] ?? API_BASE;
@@ -29,7 +51,7 @@ export function errorText(error: unknown, fallback: string): string {
 function networkMessage(error: unknown): string {
   const message = error instanceof Error ? error.message : "";
   if (message === "Failed to fetch" || message.includes("Network request failed")) {
-    return `Daily Challenge could not reach the API at ${API_HOST_LABEL}. Start Django, or open port 8000 on 13.56.184.13.`;
+    return `Daily Challenge could not reach the API at ${API_HOST_LABEL}. From finalproject/dailychallenge, run npm run web so Django starts with the app.`;
   }
   return message || "The request failed.";
 }

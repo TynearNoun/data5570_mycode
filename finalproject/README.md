@@ -51,22 +51,12 @@ App, from `finalproject/dailychallenge`:
 
 ```bash
 npm install
-cp .env.example .env
-```
-
-Point `.env` at the local API while you are not on the EC2 host:
-
-```bash
-EXPO_PUBLIC_DJANGO_API_URL=http://127.0.0.1:8042/api
-```
-
-Then:
-
-```bash
 npm run web
 ```
 
-The web app is at `http://127.0.0.1:8091`. `npm run ios` and `npm run android` start the same project. A phone cannot use `127.0.0.1`, so point `EXPO_PUBLIC_DJANGO_API_URL` at the machine address or the EC2 address and start Expo again. Expo reads `EXPO_PUBLIC_` values when the bundle is built.
+That starts Django on `127.0.0.1:8042` and the web app on `http://127.0.0.1:8091`. The browser talks only to port 8091. Expo forwards `/api` and `/media` to Django, so do not point `EXPO_PUBLIC_DJANGO_API_URL` at `127.0.0.1:8042`.
+
+`npm run ios` and `npm run android` do not use that forwarder. A phone cannot use `127.0.0.1`, so set `EXPO_PUBLIC_DJANGO_API_URL` to the computer’s address or the EC2 address and start Expo again. Expo reads `EXPO_PUBLIC_` values when the bundle is built.
 
 Copy `djangobackend/.env.example` to `djangobackend/.env` before you put real secrets there. The app runs without that file; the defaults are for local development only.
 
