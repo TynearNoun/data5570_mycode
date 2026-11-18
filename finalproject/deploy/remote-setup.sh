@@ -52,8 +52,11 @@ fi
 python manage.py migrate
 python manage.py seed_demo
 
-sudo tee /etc/systemd/system/rally-api.service >/dev/null <<UNIT
-[Unit]
+# Write the unit with Python so a Windows CRLF copy of this script cannot
+# leave carriage returns in the file. systemd reports those as "Bad message".
+"${APP_HOME}/.venv/bin/python" - <<PY
+from pathlib import Path
+Path("/tmp/rally-api.service").write_text("""[Unit]
 Description=Daily Challenge API
 After=network.target
 
@@ -68,8 +71,9 @@ Restart=always
 
 [Install]
 WantedBy=multi-user.target
-UNIT
-
+""".replace("\r", ""))
+PY
+sudo cp /tmp/rally-api.service /etc/systemd/system/rally-api.service
 sudo systemctl daemon-reload
 sudo systemctl enable rally-api
 sudo systemctl restart rally-api
