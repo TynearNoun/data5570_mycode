@@ -7,17 +7,41 @@ APP_HOME="${HOME}/rally"
 
 if command -v dnf >/dev/null 2>&1; then
   sudo dnf install -y python3 python3-pip
+  # Amazon Linux 2023's python3 is 3.9. Django 5.2 needs 3.10 or newer.
+  sudo dnf install -y python3.12 python3.12-pip || sudo dnf install -y python3.11 python3.11-pip
 elif command -v yum >/dev/null 2>&1; then
   sudo yum install -y python3 python3-pip
+  sudo yum install -y python3.11 python3.11-pip || true
 elif command -v apt-get >/dev/null 2>&1; then
   sudo apt-get update
   sudo apt-get install -y python3 python3-venv python3-pip
 fi
 
+pick_python() {
+  local candidate version
+  for candidate in python3.12 python3.11 python3.10 python3; do
+    if command -v "$candidate" >/dev/null 2>&1; then
+      version="$("$candidate" -c 'import sys; print("%d.%d" % sys.version_info[:2])')"
+      case "$version" in
+        3.9|3.8|3.7|2.*) continue ;;
+      esac
+      echo "$candidate"
+      return 0
+    fi
+  done
+  return 1
+}
+
+PYTHON="$(pick_python)" || {
+  echo "Django 5.2 needs Python 3.10 or newer. This instance only has Python 3.9." >&2
+  exit 1
+}
+
 mkdir -p "${APP_HOME}"
 tar -xzf /tmp/rally-finalproject.tgz -C "${APP_HOME}"
 cd "${APP_HOME}/djangobackend"
-python3 -m venv "${APP_HOME}/.venv"
+rm -rf "${APP_HOME}/.venv"
+"$PYTHON" -m venv "${APP_HOME}/.venv"
 # shellcheck disable=SC1091
 source "${APP_HOME}/.venv/bin/activate"
 python -m pip install --upgrade pip
