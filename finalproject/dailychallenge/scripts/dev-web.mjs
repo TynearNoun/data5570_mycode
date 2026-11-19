@@ -1,16 +1,58 @@
-import { spawn } from "node:child_process";
+import { spawn, spawnSync } from "node:child_process";
 import { existsSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const appRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const backend = path.resolve(appRoot, "../djangobackend");
-const venvPython =
-  process.platform === "win32"
-    ? path.join(backend, "../.venv/Scripts/python.exe")
-    : path.join(backend, "../.venv/bin/python");
-const python = existsSync(venvPython) ? venvPython : process.platform === "win32" ? "python" : "python3";
+const projectRoot = path.resolve(backend, "..");
 const expoCli = path.join(appRoot, "node_modules/expo/bin/cli");
+
+function venvPython() {
+  const folder = process.platform === "win32" ? path.join("Scripts", "python.exe") : path.join("bin", "python");
+  const candidates = [
+    path.join(backend, ".venv", folder),
+    path.join(projectRoot, ".venv", folder),
+  ];
+  return candidates.find((candidate) => existsSync(candidate)) ?? null;
+}
+
+function windowsPython() {
+  const where = spawnSync("where.exe", ["py"], { encoding: "utf8" });
+  if (where.status !== 0) return null;
+  const exe = where.stdout
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .find((line) => line && !line.toLowerCase().includes("windowsapps"));
+  return exe && existsSync(exe) ? exe : null;
+}
+
+function pythonLaunch() {
+  const venv = venvPython();
+  if (venv) return { command: venv, prefix: [] };
+  if (process.platform === "win32") {
+    const launcher = windowsPython();
+    if (launcher) return { command: launcher, prefix: ["-3"] };
+    return null;
+  }
+  return { command: "python3", prefix: [] };
+}
+
+function pythonMissing() {
+  console.error("");
+  console.error("Python was not found. Windows is opening the Store alias instead of Python.");
+  console.error("Install Python, close this terminal, open a new one, then run:");
+  console.error("");
+  console.error("  winget install -e --id Python.Python.3.12");
+  console.error("  cd $env:USERPROFILE\\data5570_mycode\\finalproject");
+  console.error("  py -3 -m venv .venv");
+  console.error("  .\\.venv\\Scripts\\python -m pip install -r djangobackend\\requirements.txt");
+  console.error("  .\\.venv\\Scripts\\python djangobackend\\manage.py migrate");
+  console.error("  .\\.venv\\Scripts\\python djangobackend\\manage.py seed_demo");
+  console.error("  cd dailychallenge");
+  console.error("  npm run web");
+  console.error("");
+}
 
 async function apiIsUp() {
   try {
@@ -29,14 +71,32 @@ function start(command, args, cwd) {
   return child;
 }
 
+const python = pythonLaunch();
 let django;
 if (!(await apiIsUp())) {
-  django = start(python, ["manage.py", "runserver", "127.0.0.1:8042"], backend);
-  for (let attempt = 0; attempt < 40 && !(await apiIsUp()); attempt += 1) {
-    await new Promise((resolve) => setTimeout(resolve, 250));
-  }
-  if (!(await apiIsUp())) {
-    console.error("Django did not start. From finalproject/djangobackend: python manage.py runserver 127.0.0.1:8042");
+  if (!python) {
+    pythonMissing();
+  } else {
+    const migrated = spawnSync(python.command, [...python.prefix, "manage.py", "migrate", "--noinput"], {
+      cwd: backend,
+      stdio: "inherit",
+    });
+    if (migrated.status !== 0) {
+      const pip =
+        process.platform === "win32"
+          ? ".\\.venv\\Scripts\\python -m pip install -r djangobackend\\requirements.txt"
+          : ".venv/bin/python -m pip install -r djangobackend/requirements.txt";
+      console.error("Django migrate failed. Install the packages, then start the app again:");
+      console.error(`  ${pip}`);
+    } else {
+      django = start(python.command, [...python.prefix, "manage.py", "runserver", "127.0.0.1:8042"], backend);
+      for (let attempt = 0; attempt < 40 && !(await apiIsUp()); attempt += 1) {
+        await new Promise((resolve) => setTimeout(resolve, 250));
+      }
+      if (!(await apiIsUp())) {
+        console.error("Django did not start on 127.0.0.1:8042.");
+      }
+    }
   }
 }
 

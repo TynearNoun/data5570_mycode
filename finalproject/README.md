@@ -31,30 +31,40 @@ Sign in as Mara from the login screen, then send today’s proof. Ellis’s note
 
 ## Run it locally
 
-You need Node.js 22 and Python 3.12.
+You need Node.js 22 and Python 3.12. On Windows, `python` by itself is often the Microsoft Store alias and does not run Django. Use the `py` launcher.
 
-API, from `finalproject/djangobackend`:
+From PowerShell:
 
-```bash
-python3 -m venv .venv
-source .venv/bin/activate
-python -m pip install -r requirements.txt
-python manage.py migrate
-python manage.py seed_demo
-python manage.py test
-python manage.py runserver 0.0.0.0:8042
+```powershell
+winget install -e --id Python.Python.3.12
 ```
 
-Health check: `http://127.0.0.1:8042/api/health/`
+Close that terminal so the new Python is on the path, open a new one, then:
 
-App, from `finalproject/dailychallenge`:
-
-```bash
+```powershell
+cd $env:USERPROFILE\data5570_mycode\finalproject
+py -3 -m venv .venv
+.\.venv\Scripts\python -m pip install -r djangobackend\requirements.txt
+.\.venv\Scripts\python djangobackend\manage.py migrate
+.\.venv\Scripts\python djangobackend\manage.py seed_demo
+cd dailychallenge
 npm install
 npm run web
 ```
 
-That starts Django on `127.0.0.1:8042` and the web app on `http://127.0.0.1:8091`. The browser talks only to port 8091. Expo forwards `/api` and `/media` to Django, so do not point `EXPO_PUBLIC_DJANGO_API_URL` at `127.0.0.1:8042`.
+On macOS or Linux, from `finalproject`:
+
+```bash
+python3 -m venv .venv
+.venv/bin/python -m pip install -r djangobackend/requirements.txt
+.venv/bin/python djangobackend/manage.py migrate
+.venv/bin/python djangobackend/manage.py seed_demo
+cd dailychallenge
+npm install
+npm run web
+```
+
+`npm run web` starts Django on `127.0.0.1:8042` and the web app on `http://127.0.0.1:8091`. The health check is `http://127.0.0.1:8042/api/health/`. The browser talks only to port 8091. Expo forwards `/api` and `/media` to Django, so do not point `EXPO_PUBLIC_DJANGO_API_URL` at `127.0.0.1:8042`.
 
 `npm run ios` and `npm run android` do not use that forwarder. A phone cannot use `127.0.0.1`, so set `EXPO_PUBLIC_DJANGO_API_URL` to the computer’s address or the EC2 address and start Expo again. Expo reads `EXPO_PUBLIC_` values when the bundle is built.
 
