@@ -33,4 +33,4 @@ if (!existsSync(path.join(appRoot, "dist"))) {
   process.exit(1);
 }
 
-run("eas", ["deploy", "--prod"], { shell: process.platform === "win32" });
+run("eas", ["deploy"], { shell: process.platform === "win32" });
