@@ -10,12 +10,12 @@ function pointsAtThisMachine(url: string): boolean {
 }
 
 /**
- * The browser always calls this site at `/api`. Local Expo forwards that to
- * Django on this computer. The hosted site forwards it to the class EC2 API,
- * because an HTTPS page cannot call http://13.56.184.13:8000 itself.
- * A phone calls the EC2 API directly.
+ * An https:// API address is the Cloudflare tunnel in front of Django on
+ * http://13.56.184.13:8000. The browser can call that tunnel directly.
+ * Without it, local web uses /api on this site, and a phone calls the EC2 API.
  */
 export function resolveApiBase(): string {
+  if (configured.startsWith("https://")) return configured;
   if (Platform.OS === "web") return "/api";
   if (configured && !pointsAtThisMachine(configured)) return configured;
   return "http://13.56.184.13:8000/api";

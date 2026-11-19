@@ -144,7 +144,31 @@ eas login
 npm run eas-deploy
 ```
 
-`npm run eas-deploy` exports the site and runs `eas deploy`. That publishes a preview and prints a new address like `https://dailychallenge--jsh3tlzc4n.expo.app`. `eas deploy` by itself fails when `dist/` is missing. The hosted page is HTTPS, so the browser cannot call `http://13.56.184.13:8000` itself. Its `/api` route forwards to that Django API through the hostname `13.56.184.13.sslip.io`, because the Expo host rejects a bare IP. `npm run eas-build` builds the iOS and Android apps, and those call `http://13.56.184.13:8000/api/` directly. The API is plain HTTP, so the iOS and Android settings allow that host.
+`npm run eas-deploy` exports the site and runs `eas deploy`. That publishes a preview and prints a new address like `https://dailychallenge--jsh3tlzc4n.expo.app`. `eas deploy` by itself fails when `dist/` is missing. The hosted page is HTTPS, so the browser cannot call `http://13.56.184.13:8000` itself. Put the Cloudflare tunnel URL in `EXPO_PUBLIC_DJANGO_API_URL` before that export. `npm run eas-build` builds the iOS and Android apps, and those call `http://13.56.184.13:8000/api/` directly. The API is plain HTTP, so the iOS and Android settings allow that host.
+
+## HTTPS tunnel
+
+Django stays on the EC2 instance at `http://13.56.184.13:8000`. A Cloudflare quick tunnel gives that same server an `https://….trycloudflare.com` address the Expo site can call. This instance is Amazon Linux, so the Ubuntu `apt` install from class does not apply. `deploy/cloudflared.sh` installs the binary and opens the tunnel.
+
+From PowerShell, with the key in Downloads:
+
+```powershell
+cd $env:USERPROFILE\data5570_mycode
+scp -i $env:USERPROFILE\Downloads\data5570finalproject.pem finalproject\deploy\cloudflared.sh ec2-user@13.56.184.13:/tmp/cloudflared.sh
+ssh -i $env:USERPROFILE\Downloads\data5570finalproject.pem ec2-user@13.56.184.13 "sed -i 's/\r$//' /tmp/cloudflared.sh && bash /tmp/cloudflared.sh"
+```
+
+Leave that SSH session open. In its output, copy the `https://….trycloudflare.com` line. Django is still the API. The health check is that address plus `/api/health/`.
+
+On your PC, from `finalproject/dailychallenge`, set the variable to the tunnel plus `/api` and publish again:
+
+```powershell
+$env:EXPO_PUBLIC_DJANGO_API_URL = "https://PASTE.trycloudflare.com/api"
+npx expo export --platform web
+eas deploy
+```
+
+The printed preview address is the Expo app. The tunnel address changes if `cloudflared` stops, so keep that SSH session running. `bash /tmp/cloudflared.sh --service` installs a systemd service instead. Its address is in `journalctl -u cloudflared-quick`, and it changes when the service restarts.
 
 ## Redux
 
