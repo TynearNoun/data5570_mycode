@@ -8,9 +8,17 @@
     "scheme": "dailychallenge",
     "userInterfaceStyle": "light",
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.tynearnoun.dailychallenge",
+      "infoPlist": {
+        "NSAppTransportSecurity": {
+          "NSAllowsArbitraryLoads": true
+        }
+      }
     },
     "android": {
+      "package": "com.tynearnoun.dailychallenge",
+      "usesCleartextTraffic": true,
       "adaptiveIcon": {
         "backgroundColor": "#1E3A34",
         "foregroundImage": "./assets/images/android-icon-foreground.png",

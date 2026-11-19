@@ -36,7 +36,9 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "node ./scripts/dev-web.mjs",
-    "build": "expo export --platform web"
+    "build": "expo export --platform web",
+    "eas-build": "eas build --platform all --profile production",
+    "eas-deploy": "eas deploy"
   },
   "private": true
 }

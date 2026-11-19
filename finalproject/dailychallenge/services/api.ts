@@ -9,22 +9,28 @@ function pageOrigin(): string | null {
   return origin || null;
 }
 
+function isLocalPage(): boolean {
+  const host = (globalThis as { location?: { hostname?: string } }).location?.hostname;
+  return host === "localhost" || host === "127.0.0.1";
+}
+
 /** A localhost API address is the computer that bundled the app, not the browser. */
 function pointsAtThisMachine(url: string): boolean {
   return url === "" || /^https?:\/\/(127\.0\.0\.1|localhost)(:\d+)?(\/|$)/.test(url);
 }
 
 /**
- * On the web, local Django is reached through the Expo server (`/api` on the
- * same host as the page). A phone or a deployed host uses EXPO_PUBLIC_DJANGO_API_URL,
- * or the class EC2 instance when that variable is unset.
+ * Local web (`npm run web`) calls the Expo server, which forwards `/api` to Django.
+ * An EAS-hosted page, a phone, or any other host calls the class EC2 API unless
+ * EXPO_PUBLIC_DJANGO_API_URL names a different server.
  */
 export function resolveApiBase(): string {
-  if (Platform.OS === "web" && pointsAtThisMachine(configured)) {
+  if (Platform.OS === "web" && pointsAtThisMachine(configured) && isLocalPage()) {
     const origin = pageOrigin();
     if (origin) return `${origin}/api`;
   }
-  return configured || "http://13.56.184.13:8000/api";
+  if (configured && !pointsAtThisMachine(configured)) return configured;
+  return "http://13.56.184.13:8000/api";
 }
 
 export const API_BASE = resolveApiBase();
