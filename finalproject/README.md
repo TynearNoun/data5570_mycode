@@ -196,7 +196,7 @@ The token and the selected group id are stored with AsyncStorage and restored by
 SQLite file: `djangobackend/db.sqlite3`. Tables:
 
 - `auth_user` and `authtoken_token` — Django accounts and API tokens.
-- `rally_profile` — display name and bio, one row per user.
+- `dailychallenge_profile` — display name and bio, one row per user.
 - `rally_friendgroup` — name, description, unique invite code.
 - `rally_membership` — user, group, role. One membership per pair.
 - `rally_challenge` — daily or custom, proof kind, date. One daily challenge per group per date.

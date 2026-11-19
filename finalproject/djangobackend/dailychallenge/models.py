@@ -13,6 +13,9 @@ class Profile(models.Model):
     bio = models.CharField(max_length=280, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        db_table = "dailychallenge_profile"
+
     def __str__(self):
         return self.display_name
 
