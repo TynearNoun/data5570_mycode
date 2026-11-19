@@ -3,7 +3,12 @@
 set -euo pipefail
 
 APP_USER="$(id -un)"
-APP_HOME="${HOME}/rally"
+APP_HOME="${HOME}/dailychallenge"
+OLD_HOME="${HOME}/rally"
+if [ -d "${OLD_HOME}" ] && [ ! -e "${APP_HOME}" ]; then
+  sudo systemctl stop rally-api || true
+  mv "${OLD_HOME}" "${APP_HOME}"
+fi
 
 if command -v dnf >/dev/null 2>&1; then
   sudo dnf install -y python3 python3-pip

@@ -80,7 +80,7 @@ From PowerShell, in `finalproject`:
 powershell -ExecutionPolicy Bypass -File .\deploy\ec2.ps1
 ```
 
-The script tightens the key’s file permissions so OpenSSH will accept it, copies the project to the instance, and starts the API with systemd on port **8000**. The service is `rally-api`. The login user is `ec2-user`.
+The script tightens the key’s file permissions so OpenSSH will accept it, copies the project to `~/dailychallenge` on the instance, and starts the API with systemd on port **8000**. The service is `rally-api`. The login user is `ec2-user`. An older copy at `~/rally` is moved to `~/dailychallenge` the first time this script runs.
 
 From Git Bash or WSL, the same steps are `bash deploy/ec2.sh`. If the key is not at `/mnt/c/Users/tynea/Downloads/data5570finalproject.pem`, set `RALLY_KEY` to the real path.
 
