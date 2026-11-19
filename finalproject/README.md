@@ -124,16 +124,17 @@ The pieces the class asks for are already wired together.
 - **Database.** SQLite is `djangobackend/db.sqlite3` on the EC2 instance. Set `DB_ENGINE` to Postgres when you move the same models to RDS.
 - **Live hosts.** The API is `http://13.56.184.13:8000/api/health/`. The Expo app is published with EAS from `dailychallenge/`. A hosted page calls that EC2 address. `npm run web` on your own computer still uses the local Django server.
 
+The existing Expo project `dailychallenge` is already linked. Its id, `5d85316c-87b1-4d6e-9ded-649ce535e8d4`, is in `dailychallenge/app.json`. Skip `eas init`.
+
 From `finalproject/dailychallenge`, after `npm install`:
 
 ```powershell
 npm install -g eas-cli
 eas login
-eas init
 npm run eas-deploy
 ```
 
-`eas init` writes the Expo project id into `app.json`. `npm run eas-deploy` publishes the web app. `npm run eas-build` builds the iOS and Android apps. Both profiles in `eas.json` point `EXPO_PUBLIC_DJANGO_API_URL` at `http://13.56.184.13:8000/api`. The API is plain HTTP, so the iOS and Android settings allow that host.
+`npm run eas-deploy` hosts the web app. `npm run eas-build` builds the iOS and Android apps. Both profiles in `eas.json` point `EXPO_PUBLIC_DJANGO_API_URL` at `http://13.56.184.13:8000/api`. The API is plain HTTP, so the iOS and Android settings allow that host.
 
 ## Redux
 
