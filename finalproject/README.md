@@ -158,7 +158,13 @@ scp -i $env:USERPROFILE\Downloads\data5570finalproject.pem finalproject\deploy\c
 ssh -i $env:USERPROFILE\Downloads\data5570finalproject.pem ec2-user@13.56.184.13 "sed -i 's/\r$//' /tmp/cloudflared.sh && bash /tmp/cloudflared.sh"
 ```
 
-Leave that SSH session open. In its output, copy the `https://….trycloudflare.com` line. Django is still the API. The health check is that address plus `/api/health/`.
+That command uses a quick tunnel. To attach the EC2 instance to the Cloudflare account you already signed into with GitHub, run this once instead, and open the link it prints on your own computer:
+
+```powershell
+ssh -i $env:USERPROFILE\Downloads\data5570finalproject.pem ec2-user@13.56.184.13 "bash /tmp/cloudflared.sh --login"
+```
+
+Choose that account. If Cloudflare asks for a domain and the account does not have one, close the page and start the quick tunnel with the first SSH command. Django is still the API. The health check is the `https://….trycloudflare.com` address plus `/api/health/`. Leave that SSH session open.
 
 On your PC, from `finalproject/dailychallenge`, set the variable to the tunnel plus `/api` and publish again:
 

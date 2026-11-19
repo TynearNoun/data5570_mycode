@@ -30,6 +30,11 @@ install_cloudflared() {
 
 install_cloudflared
 
+if [ "${1:-}" = "--login" ]; then
+  echo "Open the link this prints. Sign in with the Cloudflare account you already use through GitHub, then pick a domain if it asks."
+  exec cloudflared tunnel login
+fi
+
 if [ "${1:-}" = "--service" ]; then
   sudo tee /etc/systemd/system/cloudflared-quick.service >/dev/null <<EOF
 [Unit]
