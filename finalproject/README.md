@@ -148,9 +148,9 @@ Points are not a column someone can edit out of band. Deleting a reaction remove
 
 ## Layout
 
-- `djangobackend/rally/models.py` — tables.
-- `djangobackend/rally/views.py` and `urls.py` — the API.
-- `djangobackend/rally/services.py` — points, streaks, the daily prompt, optional S3.
+- `djangobackend/dailychallenge/models.py` — tables.
+- `djangobackend/dailychallenge/views.py` and `urls.py` — the API.
+- `djangobackend/dailychallenge/services.py` — points, streaks, the daily prompt, optional S3.
 - `dailychallenge/app/(auth)` — sign in and sign up.
 - `dailychallenge/app/(app)` — Today, Groups, Create, Board, Chat, Account.
 - `dailychallenge/components` — shared buttons, fields, cards, the shell, proof, and submission cards.

@@ -4,8 +4,8 @@ from django.contrib.auth.models import User
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
-from rally.models import Challenge, FriendGroup, Membership, Message, Profile, Reaction, Submission
-from rally.services import award_challenge, award_reaction, award_submission
+from dailychallenge.models import Challenge, FriendGroup, Membership, Message, Profile, Reaction, Submission
+from dailychallenge.services import award_challenge, award_reaction, award_submission
 
 PASSWORD = "Rally-demo-19"
 

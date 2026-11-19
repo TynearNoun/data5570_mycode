@@ -18,7 +18,7 @@ def tiny_png(name="proof.png"):
     return SimpleUploadedFile(name, buffer.getvalue(), content_type="image/png")
 
 
-class RallyApiTests(APITestCase):
+class DailyChallengeApiTests(APITestCase):
     def register(self, username, display_name):
         response = self.client.post(
             "/api/auth/register/",

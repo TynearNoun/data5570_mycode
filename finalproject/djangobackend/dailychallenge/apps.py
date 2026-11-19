@@ -1,9 +1,12 @@
 from django.apps import AppConfig
 
 
-class RallyConfig(AppConfig):
+class DailyChallengeConfig(AppConfig):
     default_auto_field = "django.db.models.BigAutoField"
-    name = "rally"
+    name = "dailychallenge"
+    # The Python package moved. Existing databases still use this label,
+    # so the tables stay rally_* and the applied migration history still matches.
+    label = "rally"
 
     def ready(self):
         from django.contrib import admin
