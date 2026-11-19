@@ -32,6 +32,7 @@ class FriendGroup(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
+        db_table = "dailychallenge_friendgroup"
         ordering = ["name"]
 
     def __str__(self):
@@ -53,6 +54,7 @@ class Membership(models.Model):
     joined_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
+        db_table = "dailychallenge_membership"
         constraints = [
             models.UniqueConstraint(fields=["group", "user"], name="unique_group_member"),
         ]
@@ -88,6 +90,7 @@ class Challenge(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
+        db_table = "dailychallenge_challenge"
         ordering = ["-challenge_date", "-created_at"]
         constraints = [
             models.UniqueConstraint(
@@ -119,6 +122,7 @@ class Submission(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
+        db_table = "dailychallenge_submission"
         ordering = ["-created_at"]
         constraints = [
             models.UniqueConstraint(fields=["challenge", "user"], name="one_proof_per_user"),
@@ -144,6 +148,7 @@ class Reaction(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
+        db_table = "dailychallenge_reaction"
         constraints = [
             models.UniqueConstraint(
                 fields=["submission", "user", "kind"],
@@ -166,6 +171,7 @@ class Message(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
+        db_table = "dailychallenge_message"
         ordering = ["created_at"]
         indexes = [
             models.Index(fields=["group", "created_at"]),
@@ -215,6 +221,7 @@ class PointEvent(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
+        db_table = "dailychallenge_pointevent"
         indexes = [
             models.Index(fields=["group", "user"]),
         ]

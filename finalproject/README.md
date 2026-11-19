@@ -197,13 +197,13 @@ SQLite file: `djangobackend/db.sqlite3`. Tables:
 
 - `auth_user` and `authtoken_token` — Django accounts and API tokens.
 - `dailychallenge_profile` — display name and bio, one row per user.
-- `rally_friendgroup` — name, description, unique invite code.
-- `rally_membership` — user, group, role. One membership per pair.
-- `rally_challenge` — daily or custom, proof kind, date. One daily challenge per group per date.
-- `rally_submission` — one proof per user per challenge. Text, optional photo, optional video URL.
-- `rally_reaction` — fire, cheer, or laugh. One of each kind per user per proof.
-- `rally_message` — group chat rows.
-- `rally_pointevent` — the points ledger. The board sums these rows.
+- `dailychallenge_friendgroup` — name, description, unique invite code.
+- `dailychallenge_membership` — user, group, role. One membership per pair.
+- `dailychallenge_challenge` — daily or custom, proof kind, date. One daily challenge per group per date.
+- `dailychallenge_submission` — one proof per user per challenge. Text, optional photo, optional video URL.
+- `dailychallenge_reaction` — fire, cheer, or laugh. One of each kind per user per proof.
+- `dailychallenge_message` — group chat rows.
+- `dailychallenge_pointevent` — the points ledger. The board sums these rows.
 
 Points are not a column someone can edit out of band. Deleting a reaction removes the points that reaction awarded.
 

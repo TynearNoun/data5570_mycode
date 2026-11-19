@@ -5,8 +5,7 @@ class DailyChallengeConfig(AppConfig):
     default_auto_field = "django.db.models.BigAutoField"
     name = "dailychallenge"
     # The Python package moved. Existing databases still use this label,
-    # so the other tables stay rally_* and the applied migration history still matches.
-    # Profile is the exception: its table is dailychallenge_profile.
+    # so the applied migration history still matches. Table names are set on each model.
     label = "rally"
 
     def ready(self):
