@@ -15,6 +15,9 @@ SECRET_KEY = os.environ.get(
 
 DEBUG = os.environ.get("DJANGO_DEBUG", "true").lower() == "true"
 
+# The admin "View site" button opens the hosted Expo app.
+SITE_URL = os.environ.get("SITE_URL", "https://dailychallenge.expo.app/")
+
 # 13.56.184.13 is the class EC2 instance. "*" keeps Expo web, a phone,
 # and the browsable API working before the final origin is fixed.
 ALLOWED_HOSTS = [

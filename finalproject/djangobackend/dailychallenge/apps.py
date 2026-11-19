@@ -9,8 +9,10 @@ class DailyChallengeConfig(AppConfig):
     label = "rally"
 
     def ready(self):
+        from django.conf import settings
         from django.contrib import admin
 
         admin.site.site_header = "Daily Challenge"
         admin.site.site_title = "Daily Challenge admin"
         admin.site.index_title = "Daily challenges"
+        admin.site.site_url = settings.SITE_URL
