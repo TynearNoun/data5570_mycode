@@ -144,7 +144,7 @@ eas login
 npm run eas-deploy
 ```
 
-`npm run eas-deploy` exports the site and runs `eas deploy --prod`, which updates `https://dailychallenge.expo.app`. `eas deploy` by itself fails when `dist/` is missing. The hosted page is HTTPS, so it cannot call the HTTP API in the browser. Its `/api` route forwards to `http://13.56.184.13:8000`. `npm run eas-build` builds the iOS and Android apps, and those call the EC2 API directly. The API is plain HTTP, so the iOS and Android settings allow that host.
+`npm run eas-deploy` exports the site and runs `eas deploy --prod`, which updates `https://dailychallenge.expo.app`. `eas deploy` by itself fails when `dist/` is missing. The hosted page is `https://dailychallenge.expo.app/`. It is HTTPS, so the browser cannot call the HTTP API itself. Its `/api` route forwards to `http://13.56.184.13.sslip.io:8000`, which is the same EC2 instance. A bare IP is rejected by the Expo host. `npm run eas-build` builds the iOS and Android apps, and those call the EC2 API directly. The API is plain HTTP, so the iOS and Android settings allow that host.
 
 ## Redux
 

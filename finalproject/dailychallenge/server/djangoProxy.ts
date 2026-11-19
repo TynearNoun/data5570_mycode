@@ -1,4 +1,7 @@
-const DJANGO_ORIGIN = "http://13.56.184.13:8000";
+// Expo's host rejects a request to a bare IP (Cloudflare error 1003). This name
+// resolves to 13.56.184.13, so the hosted site can reach the same Django API.
+const DJANGO_ORIGIN = "http://13.56.184.13.sslip.io:8000";
+const DJANGO_IP_ORIGIN = "http://13.56.184.13:8000";
 
 const HOP_HEADERS = new Set([
   "connection",
@@ -45,7 +48,7 @@ export async function proxyDjango(request: Request): Promise<Response> {
 
   const type = upstream.headers.get("content-type") ?? "";
   if (type.includes("application/json") || type.includes("text/")) {
-    const text = (await upstream.text()).replaceAll(`${DJANGO_ORIGIN}`, "");
+    const text = (await upstream.text()).replaceAll(DJANGO_ORIGIN, "").replaceAll(DJANGO_IP_ORIGIN, "");
     return new Response(text, { status: upstream.status, headers: responseHeaders });
   }
 
