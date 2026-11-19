@@ -4,6 +4,7 @@ from django.apps import AppConfig
 class DailyChallengeConfig(AppConfig):
     default_auto_field = "django.db.models.BigAutoField"
     name = "dailychallenge"
+    verbose_name = "Daily Challenge"
     # The Python package moved. Existing databases still use this label,
     # so the applied migration history still matches. Table names are set on each model.
     label = "rally"
