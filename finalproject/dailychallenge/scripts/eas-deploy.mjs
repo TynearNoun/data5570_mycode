@@ -9,7 +9,8 @@ const expoCli = path.join(appRoot, "node_modules/expo/bin/cli");
 const env = {
   ...process.env,
   EXPO_PUBLIC_DJANGO_API_URL:
-    process.env.EXPO_PUBLIC_DJANGO_API_URL || "http://13.56.184.13:8000/api",
+    process.env.EXPO_PUBLIC_DJANGO_API_URL ||
+    "https://assessed-lance-attitudes-kelkoo.trycloudflare.com/api",
 };
 
 function run(command, args, options = {}) {

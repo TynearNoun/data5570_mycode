@@ -144,7 +144,7 @@ eas login
 npm run eas-deploy
 ```
 
-`npm run eas-deploy` exports the site and runs `eas deploy`. That publishes a preview and prints a new address like `https://dailychallenge--jsh3tlzc4n.expo.app`. `eas deploy` by itself fails when `dist/` is missing. The hosted page is HTTPS, so the browser cannot call `http://13.56.184.13:8000` itself. Put the Cloudflare tunnel URL in `EXPO_PUBLIC_DJANGO_API_URL` before that export. `npm run eas-build` builds the iOS and Android apps, and those call `http://13.56.184.13:8000/api/` directly. The API is plain HTTP, so the iOS and Android settings allow that host.
+`npm run eas-deploy` exports the site and runs `eas deploy`. That publishes a preview and prints a new address like `https://dailychallenge--jsh3tlzc4n.expo.app`. `eas deploy` by itself fails when `dist/` is missing. The hosted page is a single web page, so the browser has to call Django through the HTTPS tunnel. `npm run eas-deploy` points the export at `https://assessed-lance-attitudes-kelkoo.trycloudflare.com/api` unless `EXPO_PUBLIC_DJANGO_API_URL` is already set. That address works only while the tunnel window stays open. `npm run eas-build` builds the iOS and Android apps, and those call `http://13.56.184.13:8000/api/` directly. The API is plain HTTP, so the iOS and Android settings allow that host.
 
 ## HTTPS tunnel
 
