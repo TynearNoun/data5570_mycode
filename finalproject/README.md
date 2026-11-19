@@ -134,7 +134,7 @@ eas login
 npm run eas-deploy
 ```
 
-`npm run eas-deploy` hosts the web app. `npm run eas-build` builds the iOS and Android apps. Both profiles in `eas.json` point `EXPO_PUBLIC_DJANGO_API_URL` at `http://13.56.184.13:8000/api`. The API is plain HTTP, so the iOS and Android settings allow that host.
+`npm run eas-deploy` exports the site into `dist/` and then uploads that folder. `eas deploy` by itself fails when `dist/` is missing. `npm run eas-build` builds the iOS and Android apps. The export and the EAS production profile both point the app at `http://13.56.184.13:8000/api`. The API is plain HTTP, so the iOS and Android settings allow that host.
 
 ## Redux
 

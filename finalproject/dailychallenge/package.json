@@ -38,7 +38,7 @@
     "web": "node ./scripts/dev-web.mjs",
     "build": "expo export --platform web",
     "eas-build": "eas build --platform all --profile production",
-    "eas-deploy": "eas deploy"
+    "eas-deploy": "node ./scripts/eas-deploy.mjs"
   },
   "private": true
 }
