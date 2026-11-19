@@ -43,8 +43,9 @@ export default function AccountScreen() {
       <Card>
         <Text style={{ fontFamily: font.semibold, color: theme.ink }}>Server</Text>
         <Text style={{ fontFamily: font.body, color: theme.muted, lineHeight: 21 }}>
-          This session is talking to {API_HOST_LABEL}. The class host is the EC2 instance 13.56.184.13, key pair
-          data5570finalproject. The key stays in your Downloads folder and is not part of this repo.
+          {API_BASE.startsWith("/")
+            ? `This page calls ${API_HOST_LABEL}, and that server forwards the call to the API at 13.56.184.13:8000.`
+            : `This session is talking to ${API_HOST_LABEL}.`}
         </Text>
         <Text style={{ fontFamily: font.medium, color: theme.ink }}>{API_BASE}</Text>
       </Card>

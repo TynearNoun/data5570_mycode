@@ -4,31 +4,19 @@ import type { PhotoPick } from "@/services/types";
 
 const configured = process.env.EXPO_PUBLIC_DJANGO_API_URL?.replace(/\/$/, "") ?? "";
 
-function pageOrigin(): string | null {
-  const origin = (globalThis as { location?: { origin?: string } }).location?.origin;
-  return origin || null;
-}
-
-function isLocalPage(): boolean {
-  const host = (globalThis as { location?: { hostname?: string } }).location?.hostname;
-  return host === "localhost" || host === "127.0.0.1";
-}
-
 /** A localhost API address is the computer that bundled the app, not the browser. */
 function pointsAtThisMachine(url: string): boolean {
   return url === "" || /^https?:\/\/(127\.0\.0\.1|localhost)(:\d+)?(\/|$)/.test(url);
 }
 
 /**
- * Local web (`npm run web`) calls the Expo server, which forwards `/api` to Django.
- * An EAS-hosted page, a phone, or any other host calls the class EC2 API unless
- * EXPO_PUBLIC_DJANGO_API_URL names a different server.
+ * The browser always calls this site at `/api`. Local Expo forwards that to
+ * Django on this computer. The hosted site forwards it to the class EC2 API,
+ * because an HTTPS page cannot call http://13.56.184.13:8000 itself.
+ * A phone calls the EC2 API directly.
  */
 export function resolveApiBase(): string {
-  if (Platform.OS === "web" && pointsAtThisMachine(configured) && isLocalPage()) {
-    const origin = pageOrigin();
-    if (origin) return `${origin}/api`;
-  }
+  if (Platform.OS === "web") return "/api";
   if (configured && !pointsAtThisMachine(configured)) return configured;
   return "http://13.56.184.13:8000/api";
 }
@@ -36,7 +24,7 @@ export function resolveApiBase(): string {
 export const API_BASE = resolveApiBase();
 
 const hostMatch = API_BASE.match(/^https?:\/\/([^/]+)/);
-export const API_HOST_LABEL = hostMatch?.[1] ?? API_BASE;
+export const API_HOST_LABEL = API_BASE.startsWith("/") ? "this site" : (hostMatch?.[1] ?? API_BASE);
 
 export class ApiError extends Error {
   status: number;
@@ -57,7 +45,10 @@ export function errorText(error: unknown, fallback: string): string {
 function networkMessage(error: unknown): string {
   const message = error instanceof Error ? error.message : "";
   if (message === "Failed to fetch" || message.includes("Network request failed")) {
-    return `Daily Challenge could not reach the API at ${API_HOST_LABEL}. From finalproject/dailychallenge, run npm run web so Django starts with the app.`;
+    if (API_BASE.startsWith("/")) {
+      return "Daily Challenge could not reach the API through this site. From finalproject/dailychallenge, run npm run web so Django starts with the app.";
+    }
+    return `Daily Challenge could not reach the API at ${API_HOST_LABEL}. Open TCP 8000 on that host.`;
   }
   return message || "The request failed.";
 }

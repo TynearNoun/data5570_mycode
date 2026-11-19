@@ -122,7 +122,7 @@ The pieces the class asks for are already wired together.
 - **Redux.** `dailychallenge/state/store.ts` holds one store for every screen. Thunks load data with GET and send it with POST. `fetchGroups` is `GET /api/groups/`. `login` and `createGroup` are POST. A listener refetches the board after proof or a reaction, so the pages share one copy of the data.
 - **Django REST.** `djangobackend/dailychallenge/urls.py` is the API. Accounts, groups, challenges, proof, reactions, chat, and the board each have an endpoint.
 - **Database.** SQLite is `djangobackend/db.sqlite3` on the EC2 instance. Set `DB_ENGINE` to Postgres when you move the same models to RDS.
-- **Live hosts.** The API is `http://13.56.184.13:8000/api/health/`. The Expo app is published with EAS from `dailychallenge/`. A hosted page calls that EC2 address. `npm run web` on your own computer still uses the local Django server.
+- **Live hosts.** The API is `http://13.56.184.13:8000/api/health/`. The Expo site is published with EAS from `dailychallenge/`. The browser calls `/api` on that HTTPS site, and the site forwards the call to EC2. A phone calls EC2 directly. `npm run web` on your own computer still uses the local Django server.
 
 The existing Expo project `dailychallenge` is already linked. Its id, `5d85316c-87b1-4d6e-9ded-649ce535e8d4`, is in `dailychallenge/app.json`. Skip `eas init`.
 
@@ -134,7 +134,7 @@ eas login
 npm run eas-deploy
 ```
 
-`npm run eas-deploy` exports the site into `dist/` and then uploads that folder. `eas deploy` by itself fails when `dist/` is missing. `npm run eas-build` builds the iOS and Android apps. The export and the EAS production profile both point the app at `http://13.56.184.13:8000/api`. The API is plain HTTP, so the iOS and Android settings allow that host.
+`npm run eas-deploy` exports the site into `dist/` and then uploads that folder. `eas deploy` by itself fails when `dist/` is missing. The hosted page is HTTPS, so it cannot call the HTTP API in the browser. Its `/api` route forwards to `http://13.56.184.13:8000`. `npm run eas-build` builds the iOS and Android apps, and those call the EC2 API directly. The API is plain HTTP, so the iOS and Android settings allow that host.
 
 ## Redux
 
