@@ -62,7 +62,7 @@ export function Field({
     <View style={{ gap: 6 }}>
       <Text style={{ fontFamily: font.medium, color: theme.ink, fontSize: 13 }}>{label}</Text>
       <TextInput
-        placeholderTextColor="#9A9086"
+        placeholderTextColor={theme.placeholder}
         {...input}
         style={[
           {

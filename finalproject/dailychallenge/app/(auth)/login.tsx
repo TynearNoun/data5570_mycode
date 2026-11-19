@@ -35,7 +35,7 @@ export default function LoginScreen() {
           gap: 20,
         }}
       >
-        <Text style={{ fontFamily: font.semibold, color: "#E7D3C4", letterSpacing: 1.2 }}>DAILY CHALLENGE</Text>
+        <Text style={{ fontFamily: font.semibold, color: theme.mist, letterSpacing: 1.2 }}>DAILY CHALLENGE</Text>
         <View style={{ gap: 12, maxWidth: 460 }}>
           <Text style={{ fontFamily: font.display, fontSize: wide ? 58 : 40, color: theme.cream, lineHeight: wide ? 62 : 44 }}>
             A small dare, every day.
@@ -44,7 +44,7 @@ export default function LoginScreen() {
             Make a circle, take the daily challenge, and leave proof the others can see.
           </Text>
         </View>
-        <Text style={{ fontFamily: font.body, color: "#9BB5AA" }}>API {API_HOST_LABEL}</Text>
+        <Text style={{ fontFamily: font.body, color: theme.mist }}>API {API_HOST_LABEL}</Text>
       </View>
       <View style={{ flex: 1, justifyContent: "center", padding: 24 }}>
         <View style={{ width: "100%", maxWidth: 440, alignSelf: "center", gap: 14 }}>

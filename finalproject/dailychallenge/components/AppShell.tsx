@@ -58,7 +58,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         >
           <View style={{ gap: 28 }}>
             <View>
-              <Text style={{ fontFamily: font.semibold, color: "#E7D3C4", letterSpacing: 1.2, fontSize: 12 }}>
+              <Text style={{ fontFamily: font.semibold, color: theme.mist, letterSpacing: 1.2, fontSize: 12 }}>
                 DAILY CHALLENGE
               </Text>
               <Text style={{ fontFamily: font.display, color: theme.cream, fontSize: 32, marginTop: 8 }}>

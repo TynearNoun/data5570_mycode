@@ -20,7 +20,6 @@ function proxyToDjango(req, res) {
   const target = new URL(djangoOrigin);
   const transport = target.protocol === "https:" ? https : http;
   const headers = { ...req.headers, host: req.headers.host };
-  delete headers["content-length"];
   const proxyReq = transport.request(
     {
       protocol: target.protocol,

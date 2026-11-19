@@ -20,7 +20,7 @@
       "package": "com.tynearnoun.dailychallenge",
       "usesCleartextTraffic": true,
       "adaptiveIcon": {
-        "backgroundColor": "#1E3A34",
+        "backgroundColor": "#0E3A4D",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
         "backgroundImage": "./assets/images/android-icon-background.png",
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
@@ -45,7 +45,7 @@
         {
           "image": "./assets/images/splash-icon.png",
           "resizeMode": "contain",
-          "backgroundColor": "#1E3A34"
+          "backgroundColor": "#0E3A4D"
         }
       ]
     ],

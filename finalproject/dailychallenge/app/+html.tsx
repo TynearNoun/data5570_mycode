@@ -14,7 +14,7 @@ export default function Root({ children }: { children: ReactNode }) {
           dangerouslySetInnerHTML={{
             __html: `
               html, body, #root { height: 100%; }
-              body { background-color: #F3EEE6; margin: 0; }
+              body { background-color: #EAF2F4; margin: 0; }
             `,
           }}
         />
