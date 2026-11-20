@@ -1,0 +1,25 @@
+{% extends "admin/base_site.html" %}
+
+{% block content %}
+  <p>{{ dares|length }} dares. Each group is given one of these per day.</p>
+  <table id="result_list">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Title</th>
+        <th scope="col">Dare</th>
+        <th scope="col">Proof</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for dare in dares %}
+        <tr>
+          <td>{{ dare.number }}</td>
+          <th scope="row">{{ dare.title }}</th>
+          <td>{{ dare.prompt }}</td>
+          <td>{{ dare.proof }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

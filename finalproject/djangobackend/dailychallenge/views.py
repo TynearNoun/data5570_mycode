@@ -10,6 +10,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .models import Challenge, FriendGroup, Membership, Message, Reaction, Submission
+from .prompts import PROMPTS
 from .serializers import (
     ChallengeCreateSerializer,
     ChallengeSerializer,
@@ -94,6 +95,16 @@ def proof_is_complete(challenge, body, photo, video_url):
     if not body.strip():
         return "Write a few words with your proof."
     return ""
+
+
+class DareBankView(APIView):
+    def get(self, request):
+        return Response(
+            [
+                {"title": title, "prompt": prompt, "proof": proof}
+                for title, prompt, proof in PROMPTS
+            ]
+        )
 
 
 class HealthView(APIView):

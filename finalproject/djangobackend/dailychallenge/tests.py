@@ -36,6 +36,26 @@ class DailyChallengeApiTests(APITestCase):
     def auth(self, token):
         self.client.credentials(HTTP_AUTHORIZATION=f"Token {token}")
 
+    def test_dare_bank_lists_every_prompt(self):
+        from dailychallenge.prompts import PROMPTS
+
+        locked = self.client.get("/api/dares/")
+        self.assertEqual(locked.status_code, 401)
+
+        created = self.register("nova", "Nova Ellis")
+        self.auth(created["token"])
+        response = self.client.get("/api/dares/")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), len(PROMPTS))
+        self.assertEqual(response.data[0]["title"], PROMPTS[0][0])
+
+        owner = User.objects.create_superuser("owner", "owner@localhost", "Owner-pass-19")
+        self.client.force_login(owner)
+        page = self.client.get("/admin/dares/")
+        self.assertEqual(page.status_code, 200)
+        self.assertContains(page, "Cold water")
+        self.assertContains(page, "Tomorrow")
+
     def test_health(self):
         response = self.client.get("/api/health/")
         self.assertEqual(response.status_code, 200)
