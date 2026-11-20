@@ -50,6 +50,36 @@ export const createGroup = createAsyncThunk<
   }
 });
 
+export const leaveGroup = createAsyncThunk<number, number, { state: Authed; rejectValue: string }>(
+  "groups/leave",
+  async (groupId, { getState, rejectWithValue }) => {
+    try {
+      await request<void>(`/groups/${groupId}/leave/`, {
+        method: "POST",
+        token: getState().auth.token,
+      });
+      return groupId;
+    } catch (error) {
+      return rejectWithValue(errorText(error, "Could not leave that group."));
+    }
+  },
+);
+
+export const deleteGroup = createAsyncThunk<number, number, { state: Authed; rejectValue: string }>(
+  "groups/delete",
+  async (groupId, { getState, rejectWithValue }) => {
+    try {
+      await request<void>(`/groups/${groupId}/`, {
+        method: "DELETE",
+        token: getState().auth.token,
+      });
+      return groupId;
+    } catch (error) {
+      return rejectWithValue(errorText(error, "Could not remove that group."));
+    }
+  },
+);
+
 export const joinGroup = createAsyncThunk<Group, string, { state: Authed; rejectValue: string }>(
   "groups/join",
   async (inviteCode, { getState, rejectWithValue }) => {
@@ -118,6 +148,36 @@ const groupsSlice = createSlice({
       .addCase(joinGroup.rejected, (state, action) => {
         state.saving = false;
         state.error = action.payload ?? "Could not join with that code.";
+      })
+      .addCase(leaveGroup.pending, (state) => {
+        state.saving = true;
+        state.error = null;
+      })
+      .addCase(leaveGroup.fulfilled, (state, action) => {
+        state.saving = false;
+        state.items = state.items.filter((group) => group.id !== action.payload);
+        if (state.selectedId === action.payload) {
+          state.selectedId = state.items[0]?.id ?? null;
+        }
+      })
+      .addCase(leaveGroup.rejected, (state, action) => {
+        state.saving = false;
+        state.error = action.payload ?? "Could not leave that group.";
+      })
+      .addCase(deleteGroup.pending, (state) => {
+        state.saving = true;
+        state.error = null;
+      })
+      .addCase(deleteGroup.fulfilled, (state, action) => {
+        state.saving = false;
+        state.items = state.items.filter((group) => group.id !== action.payload);
+        if (state.selectedId === action.payload) {
+          state.selectedId = state.items[0]?.id ?? null;
+        }
+      })
+      .addCase(deleteGroup.rejected, (state, action) => {
+        state.saving = false;
+        state.error = action.payload ?? "Could not remove that group.";
       })
       .addCase(logout.fulfilled, () => initialState);
   },

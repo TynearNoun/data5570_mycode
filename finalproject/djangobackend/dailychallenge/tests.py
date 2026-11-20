@@ -109,6 +109,35 @@ class DailyChallengeApiTests(APITestCase):
         self.assertEqual(logout.status_code, 204)
         self.assertEqual(self.client.get("/api/users/me/").status_code, 401)
 
+    def test_member_can_leave_and_owner_can_remove_group(self):
+        from dailychallenge.models import FriendGroup
+
+        owner = self.register("mara", "Mara Chen")
+        member = self.register("ellis", "Ellis Okonkwo")
+        self.auth(owner["token"])
+        created = self.client.post("/api/groups/", {"name": "Weeknight Crew"}, format="json")
+        self.assertEqual(created.status_code, 201)
+        group_id = created.data["id"]
+        code = created.data["invite_code"]
+
+        owner_leave = self.client.post(f"/api/groups/{group_id}/leave/")
+        self.assertEqual(owner_leave.status_code, 400)
+
+        self.auth(member["token"])
+        joined = self.client.post("/api/groups/join/", {"invite_code": code}, format="json")
+        self.assertEqual(joined.status_code, 200)
+        denied = self.client.delete(f"/api/groups/{group_id}/")
+        self.assertEqual(denied.status_code, 403)
+        left = self.client.post(f"/api/groups/{group_id}/leave/")
+        self.assertEqual(left.status_code, 204)
+        self.assertEqual(self.client.get("/api/groups/").data, [])
+
+        self.auth(owner["token"])
+        removed = self.client.delete(f"/api/groups/{group_id}/")
+        self.assertEqual(removed.status_code, 204)
+        self.assertEqual(self.client.get("/api/groups/").data, [])
+        self.assertFalse(FriendGroup.objects.filter(pk=group_id).exists())
+
     def test_groups_challenges_proof_points_and_chat(self):
         mara = self.register("mara", "Mara Chen")
         ellis = self.register("ellis", "Ellis Okonkwo")

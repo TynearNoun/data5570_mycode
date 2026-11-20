@@ -202,6 +202,34 @@ class GroupDetailView(APIView):
         group, _membership = found
         return Response(GroupSerializer(group, context={"request": request}).data)
 
+    def delete(self, request, group_id):
+        found, error = membership_for(request.user, group_id)
+        if error:
+            return error
+        group, membership = found
+        if membership.role != Membership.Role.OWNER:
+            return Response(
+                {"detail": "Only the group owner can remove the group."},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+        group.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class GroupLeaveView(APIView):
+    def post(self, request, group_id):
+        found, error = membership_for(request.user, group_id)
+        if error:
+            return error
+        _group, membership = found
+        if membership.role == Membership.Role.OWNER:
+            return Response(
+                {"detail": "You own this group. Remove the group instead of leaving it."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        membership.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 class GroupJoinView(APIView):
     def post(self, request):

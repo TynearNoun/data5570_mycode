@@ -12,6 +12,7 @@ urlpatterns = [
     path("groups/", views.GroupListCreateView.as_view(), name="groups"),
     path("groups/join/", views.GroupJoinView.as_view(), name="group-join"),
     path("groups/<int:group_id>/", views.GroupDetailView.as_view(), name="group-detail"),
+    path("groups/<int:group_id>/leave/", views.GroupLeaveView.as_view(), name="group-leave"),
     path("challenges/", views.ChallengeListCreateView.as_view(), name="challenges"),
     path("challenges/daily/", views.DailyChallengeView.as_view(), name="daily-challenge"),
     path("challenges/<int:challenge_id>/", views.ChallengeDetailView.as_view(), name="challenge-detail"),

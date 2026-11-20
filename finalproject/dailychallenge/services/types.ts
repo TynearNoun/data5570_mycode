@@ -46,12 +46,6 @@ export type Submission = {
 
 export type ProofKind = "text" | "photo" | "video" | "any";
 
-export type Dare = {
-  title: string;
-  prompt: string;
-  proof: ProofKind;
-};
-
 export type Challenge = {
   id: number;
   group: number;

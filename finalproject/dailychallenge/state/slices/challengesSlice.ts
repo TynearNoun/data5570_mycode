@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 import { errorText, request } from "@/services/api";
-import type { Challenge, Dare, ProofKind } from "@/services/types";
+import type { Challenge, ProofKind } from "@/services/types";
 
 import { logout } from "./authSlice";
 import { createSubmission } from "./submissionsSlice";
@@ -9,8 +9,6 @@ import { createSubmission } from "./submissionsSlice";
 export type ChallengesState = {
   byGroup: Record<number, Challenge[]>;
   dailyId: number | null;
-  bank: Dare[];
-  bankStatus: "idle" | "loading" | "ready" | "error";
   status: "idle" | "loading" | "ready" | "error";
   saving: boolean;
   error: string | null;
@@ -19,8 +17,6 @@ export type ChallengesState = {
 const initialState: ChallengesState = {
   byGroup: {},
   dailyId: null,
-  bank: [],
-  bankStatus: "idle",
   status: "idle",
   saving: false,
   error: null,
@@ -32,17 +28,6 @@ function upsert(list: Challenge[] | undefined, challenge: Challenge): Challenge[
   const rest = (list ?? []).filter((item) => item.id !== challenge.id);
   return [challenge, ...rest];
 }
-
-export const fetchDareBank = createAsyncThunk<Dare[], void, { state: Authed; rejectValue: string }>(
-  "challenges/bank",
-  async (_, { getState, rejectWithValue }) => {
-    try {
-      return await request<Dare[]>("/dares/", { token: getState().auth.token });
-    } catch (error) {
-      return rejectWithValue(errorText(error, "Could not load the dares."));
-    }
-  },
-);
 
 export const fetchChallenges = createAsyncThunk<
   { groupId: number; challenges: Challenge[] },
@@ -96,18 +81,6 @@ const challengesSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(fetchDareBank.pending, (state) => {
-        state.bankStatus = "loading";
-        state.error = null;
-      })
-      .addCase(fetchDareBank.fulfilled, (state, action) => {
-        state.bankStatus = "ready";
-        state.bank = action.payload;
-      })
-      .addCase(fetchDareBank.rejected, (state, action) => {
-        state.bankStatus = "error";
-        state.error = action.payload ?? "Could not load the dares.";
-      })
       .addCase(fetchChallenges.pending, (state) => {
         state.status = "loading";
         state.error = null;

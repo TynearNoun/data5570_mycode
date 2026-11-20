@@ -4,7 +4,7 @@ import { Pressable, Text, View, useWindowDimensions } from "react-native";
 import { Avatar, Banner, Button, Card, Field, Kicker, ScreenScroll } from "@/components/ui";
 import { font, theme } from "@/constants/theme";
 import { useAppDispatch, useAppSelector } from "@/state/hooks";
-import { createGroup, fetchGroups, joinGroup, selectGroup } from "@/state/slices/groupsSlice";
+import { createGroup, deleteGroup, fetchGroups, joinGroup, leaveGroup, selectGroup } from "@/state/slices/groupsSlice";
 
 export default function GroupsScreen() {
   const dispatch = useAppDispatch();
@@ -18,6 +18,7 @@ export default function GroupsScreen() {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [code, setCode] = useState("");
+  const [confirmingId, setConfirmingId] = useState<number | null>(null);
 
   const selected = groups.find((group) => group.id === selectedId) ?? null;
 
@@ -44,8 +45,8 @@ export default function GroupsScreen() {
         {groups.map((group) => {
           const on = group.id === selectedId;
           return (
-            <Pressable key={group.id} onPress={() => dispatch(selectGroup(group.id))}>
-              <Card tone={on ? "pine" : "card"}>
+            <Card key={group.id} tone={on ? "pine" : "card"}>
+              <Pressable onPress={() => dispatch(selectGroup(group.id))} style={{ gap: 10 }}>
                 <View style={{ flexDirection: "row", justifyContent: "space-between", gap: 12 }}>
                   <View style={{ flex: 1, gap: 4 }}>
                     <Text style={{ fontFamily: font.semibold, fontSize: 18, color: theme.ink }}>{group.name}</Text>
@@ -64,8 +65,33 @@ export default function GroupsScreen() {
                     </View>
                   ))}
                 </View>
-              </Card>
-            </Pressable>
+              </Pressable>
+              <Button
+                label={
+                  confirmingId === group.id
+                    ? group.role === "owner"
+                      ? "Remove this group"
+                      : "Leave this group"
+                    : group.role === "owner"
+                      ? "Remove group"
+                      : "Leave group"
+                }
+                tone="ghost"
+                loading={saving && confirmingId === group.id}
+                onPress={() => {
+                  if (confirmingId !== group.id) {
+                    setConfirmingId(group.id);
+                    return;
+                  }
+                  const action = group.role === "owner" ? deleteGroup(group.id) : leaveGroup(group.id);
+                  void dispatch(action).then((result) => {
+                    if (deleteGroup.fulfilled.match(result) || leaveGroup.fulfilled.match(result)) {
+                      setConfirmingId(null);
+                    }
+                  });
+                }}
+              />
+            </Card>
           );
         })}
       </View>

@@ -10,7 +10,6 @@ import { useAppDispatch, useAppSelector } from "@/state/hooks";
 
 const NAV = [
   { href: "/today", label: "Today" },
-  { href: "/dares", label: "Challenges List" },
   { href: "/groups", label: "Groups" },
   { href: "/create", label: "Create" },
   { href: "/board", label: "Board" },
