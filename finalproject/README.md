@@ -8,7 +8,7 @@ The problem it takes on is a quiet group chat with nothing to do. The people it 
 
 - Create an account and sign in. The session is a Django token kept in the app.
 - Create a friend group or join one with an invite code. The seeded circle is **Weeknight Crew**, code **WEEKNIGHT**.
-- Open today’s challenge. If the group does not have one yet, the API creates it from a bank of 42 dares, so the same group and date always get the same dare. The full bank is on the Dares screen, and in the admin under All dares.
+- Open today’s challenge. If the group does not have one yet, the API creates it from a bank of 42 dares, so the same group and date always get the same dare. The full bank is on the Challenges List screen, and in the admin under Challenges List.
 - Send proof. A photo is uploaded with the form. A video is a link. Words are required either way.
 - React to someone else’s proof. Your own proof cannot be cheered by you.
 - Write a custom challenge for the group.

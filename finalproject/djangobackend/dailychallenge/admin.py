@@ -55,7 +55,7 @@ class PointEventAdmin(admin.ModelAdmin):
 def dare_bank_view(request):
     context = {
         **admin.site.each_context(request),
-        "title": "All dares",
+        "title": "Challenges List",
         "dares": [
             {"number": index, "title": title, "prompt": prompt, "proof": proof}
             for index, (title, prompt, proof) in enumerate(PROMPTS, start=1)
@@ -81,7 +81,7 @@ _original_get_app_list = admin.site.get_app_list
 def _get_app_list(request, app_label=None):
     app_list = _original_get_app_list(request, app_label)
     dare_link = {
-        "name": "All dares",
+        "name": "Challenges List",
         "object_name": "DareBank",
         "perms": {"add": False, "change": False, "delete": False, "view": True},
         "admin_url": reverse("admin:dare-bank"),

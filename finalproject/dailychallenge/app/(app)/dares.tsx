@@ -26,14 +26,14 @@ export default function DaresScreen() {
 
   return (
     <ScreenScroll onRefresh={() => void dispatch(fetchDareBank())} refreshing={status === "loading"}>
-      <Kicker>THE BANK</Kicker>
-      <Text style={{ fontFamily: font.display, fontSize: 42, color: theme.ink }}>Dares</Text>
+      <Kicker>THE LIST</Kicker>
+      <Text style={{ fontFamily: font.display, fontSize: 42, color: theme.ink }}>Challenges List</Text>
       <Text style={{ fontFamily: font.body, color: theme.muted, fontSize: 16, maxWidth: 560 }}>
         Every group is given one of these each day. This is the full list, not only the dare for today.
       </Text>
       {status === "error" && error ? <Banner message={error} /> : null}
       {status === "loading" && dares.length === 0 ? (
-        <Text style={{ fontFamily: font.body, color: theme.muted }}>Loading the dares</Text>
+        <Text style={{ fontFamily: font.body, color: theme.muted }}>Loading the list</Text>
       ) : null}
       {dares.map((dare, index) => (
         <Card key={dare.title}>

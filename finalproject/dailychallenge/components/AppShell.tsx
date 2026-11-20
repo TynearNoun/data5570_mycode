@@ -10,7 +10,7 @@ import { useAppDispatch, useAppSelector } from "@/state/hooks";
 
 const NAV = [
   { href: "/today", label: "Today" },
-  { href: "/dares", label: "Dares" },
+  { href: "/dares", label: "Challenges List" },
   { href: "/groups", label: "Groups" },
   { href: "/create", label: "Create" },
   { href: "/board", label: "Board" },
@@ -114,10 +114,12 @@ export function AppShell({ children }: { children: ReactNode }) {
                 style={{ flex: 1, alignItems: "center", paddingVertical: 8 }}
               >
                 <Text
+                  numberOfLines={2}
                   style={{
                     fontFamily: on ? font.semibold : font.medium,
                     color: on ? theme.clay : theme.muted,
                     fontSize: 12,
+                    textAlign: "center",
                   }}
                 >
                   {item.label}
