@@ -70,7 +70,7 @@ export default function TodayScreen() {
       <ScreenScroll>
         <EmptyState
           title="No circle yet"
-          body="Create a group or join one with an invite code. Today’s dare shows up once you have people to do it with."
+          body="Create a group or join one with an invite code. Today’s challenge shows up once you have people to do it with."
         />
       </ScreenScroll>
     );
@@ -90,7 +90,7 @@ export default function TodayScreen() {
       </View>
       {challengeError ? <Banner message={challengeError} /> : null}
       {challengeStatus === "loading" && !daily ? (
-        <Text style={{ fontFamily: font.body, color: theme.muted }}>Getting today’s dare</Text>
+        <Text style={{ fontFamily: font.body, color: theme.muted }}>Getting today’s challenge</Text>
       ) : null}
       {daily ? (
         <View style={{ flexDirection: wide ? "row" : "column", gap: 16, width: "100%" }}>

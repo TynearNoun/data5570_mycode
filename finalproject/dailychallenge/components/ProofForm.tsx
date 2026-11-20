@@ -28,7 +28,7 @@ export function ProofForm({
     if (Platform.OS !== "web") {
       const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (!permission.granted) {
-        setLocalError("Photo access is off. You can still write the proof if this dare allows words.");
+        setLocalError("Photo access is off. You can still write the proof if this challenge allows words.");
         return;
       }
     }
@@ -52,11 +52,11 @@ export function ProofForm({
       return;
     }
     if (proof === "photo" && !photo) {
-      setLocalError("This dare asks for a photo.");
+      setLocalError("This challenge asks for a photo.");
       return;
     }
     if (proof === "video" && !videoUrl.trim()) {
-      setLocalError("Paste a video link for this dare.");
+      setLocalError("Paste a video link for this challenge.");
       return;
     }
     onSubmit(body.trim(), videoUrl.trim(), photo);

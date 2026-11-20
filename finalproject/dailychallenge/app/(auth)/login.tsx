@@ -75,7 +75,7 @@ export default function LoginScreen() {
           <Text style={{ fontFamily: font.semibold, color: theme.mist, letterSpacing: 1.2 }}>DAILY CHALLENGE</Text>
           <View style={{ gap: 12, maxWidth: 460 }}>
             <Text style={{ fontFamily: font.display, fontSize: 58, color: theme.cream, lineHeight: 62 }}>
-              A small dare, every day.
+              A small challenge, every day.
             </Text>
             <Text style={{ fontFamily: font.body, color: theme.mist, fontSize: 18, lineHeight: 26 }}>
               Make a circle, take the daily challenge, and leave proof the others can see.
@@ -113,7 +113,7 @@ export default function LoginScreen() {
           DAILY CHALLENGE
         </Text>
         <Text style={{ fontFamily: font.display, fontSize: 32, color: theme.cream, lineHeight: 36 }}>
-          A small dare, every day.
+          A small challenge, every day.
         </Text>
         <Text style={{ fontFamily: font.body, color: theme.mist, fontSize: 16, lineHeight: 22 }}>
           Make a circle, take the daily challenge, and leave proof the others can see.

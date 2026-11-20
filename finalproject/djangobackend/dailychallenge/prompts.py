@@ -27,7 +27,7 @@ PROMPTS = [
         "text",
     ),
     (
-        "Voice note dare",
+        "Voice note challenge",
         "Record a video under fifteen seconds of the noise outside your door right now.",
         "video",
     ),

@@ -33,7 +33,7 @@ export default function BoardScreen() {
       <Kicker>{group.name.toUpperCase()}</Kicker>
       <Text style={{ fontFamily: font.display, fontSize: 42, color: theme.ink }}>Board</Text>
       <Text style={{ fontFamily: font.body, color: theme.muted, fontSize: 16, maxWidth: 560 }}>
-        Proof is 10 points. A reaction on your proof is 2. A custom dare you write is 3. Streaks count daily challenges in a row, Denver time.
+        Proof is 10 points. A reaction on your proof is 2. A custom challenge you write is 3. Streaks count daily challenges in a row, Denver time.
       </Text>
       {error ? <Banner message={error} /> : null}
       {status === "loading" && standings.length === 0 ? (

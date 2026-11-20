@@ -35,7 +35,7 @@ export default function CreateScreen() {
   function submit() {
     if (!selectedId) return;
     if (!title.trim() || !prompt.trim()) {
-      setLocalError("Give the dare a title and say what people should do.");
+      setLocalError("Give the challenge a title and say what people should do.");
       return;
     }
     if (date && !/^\d{4}-\d{2}-\d{2}$/.test(date)) {
@@ -63,7 +63,7 @@ export default function CreateScreen() {
   if (!group) {
     return (
       <ScreenScroll>
-        <EmptyState title="Pick a group first" body="Custom dares belong to a circle. Open Groups and select one." />
+        <EmptyState title="Pick a group first" body="Custom challenges belong to a circle. Open Groups and select one." />
       </ScreenScroll>
     );
   }
@@ -71,7 +71,7 @@ export default function CreateScreen() {
   return (
     <ScreenScroll>
       <Kicker>{group.name.toUpperCase()}</Kicker>
-      <Text style={{ fontFamily: font.display, fontSize: 40, color: theme.ink }}>Make a dare</Text>
+      <Text style={{ fontFamily: font.display, fontSize: 40, color: theme.ink }}>Make a challenge</Text>
       <Text style={{ fontFamily: font.body, color: theme.muted, fontSize: 16, maxWidth: 560 }}>
         The daily one is generated for the group. This is an extra challenge you write. Making one is worth 3 points.
       </Text>

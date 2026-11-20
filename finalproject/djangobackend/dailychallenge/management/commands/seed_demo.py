@@ -20,10 +20,14 @@ class Command(BaseCommand):
             invite_code="WEEKNIGHT",
             defaults={
                 "name": "Weeknight Crew",
-                "description": "Three friends, one dare a day. Photos encouraged, excuses optional.",
+                "description": "Three friends, one challenge a day. Photos encouraged, excuses optional.",
                 "created_by": mara,
             },
         )
+        old_description = "Three friends, one dare a day. Photos encouraged, excuses optional."
+        if group.description == old_description:
+            group.description = "Three friends, one challenge a day. Photos encouraged, excuses optional."
+            group.save(update_fields=["description"])
         Membership.objects.get_or_create(group=group, user=mara, defaults={"role": Membership.Role.OWNER})
         Membership.objects.get_or_create(group=group, user=ellis, defaults={"role": Membership.Role.MEMBER})
 

@@ -27,7 +27,7 @@ export default function GroupsScreen() {
       <Kicker>PEOPLE</Kicker>
       <Text style={{ fontFamily: font.display, fontSize: wide ? 48 : 36, color: theme.ink }}>Groups</Text>
       <Text style={{ fontFamily: font.body, color: theme.muted, fontSize: 16, maxWidth: 560 }}>
-        A group shares one daily dare, one chat, and one board. Switch circles by tapping a card.
+        A group shares one daily challenge, one chat, and one board. Switch circles by tapping a card.
       </Text>
       {error ? <Banner message={error} /> : null}
       {status === "loading" && groups.length === 0 ? (
@@ -104,7 +104,7 @@ export default function GroupsScreen() {
               label="What is this circle for?"
               value={description}
               onChangeText={setDescription}
-              placeholder="One dare a day."
+              placeholder="One challenge a day."
             />
             <Button
               label="Create group"

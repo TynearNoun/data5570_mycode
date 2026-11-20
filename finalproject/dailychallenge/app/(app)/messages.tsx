@@ -49,7 +49,7 @@ export default function MessagesScreen() {
           <Text style={{ fontFamily: font.body, color: theme.muted }}>Loading the thread</Text>
         ) : null}
         {status !== "loading" && messages.length === 0 ? (
-          <EmptyState title="The chat is quiet" body="Say which part of the dare you are doing." />
+          <EmptyState title="The chat is quiet" body="Say which part of the challenge you are doing." />
         ) : null}
         {messages.map((message) => {
           const mine = message.user.id === userId;
