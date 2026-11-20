@@ -1,6 +1,7 @@
 import { Link } from "expo-router";
 import { useState } from "react";
-import { Text, View, useWindowDimensions } from "react-native";
+import { ScrollView, Text, View, useWindowDimensions } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Banner, Button, Field } from "@/components/ui";
 import { font, theme } from "@/constants/theme";
@@ -17,6 +18,7 @@ export default function SignupScreen() {
   const [password, setPassword] = useState("");
   const [localError, setLocalError] = useState<string | null>(null);
   const { width } = useWindowDimensions();
+  const insets = useSafeAreaInsets();
   const wide = width >= 880;
 
   function submit() {
@@ -36,7 +38,17 @@ export default function SignupScreen() {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: theme.bg, justifyContent: "center", padding: wide ? 48 : 20 }}>
+    <ScrollView
+      style={{ flex: 1, backgroundColor: theme.bg }}
+      contentContainerStyle={{
+        flexGrow: 1,
+        justifyContent: "center",
+        paddingHorizontal: wide ? 48 : 20,
+        paddingTop: insets.top + (wide ? 48 : 24),
+        paddingBottom: insets.bottom + 28,
+      }}
+      keyboardShouldPersistTaps="handled"
+    >
       <View style={{ width: "100%", maxWidth: 480, alignSelf: "center", gap: 14 }}>
         <Text style={{ fontFamily: font.semibold, color: theme.clay, letterSpacing: 1.2 }}>DAILY CHALLENGE</Text>
         <Text style={{ fontFamily: font.display, fontSize: 40, color: theme.ink }}>Make an account</Text>
@@ -54,6 +66,6 @@ export default function SignupScreen() {
           I already have an account
         </Link>
       </View>
-    </View>
+    </ScrollView>
   );
 }
