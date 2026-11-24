@@ -10,7 +10,7 @@ const env = {
   ...process.env,
   EXPO_PUBLIC_DJANGO_API_URL:
     process.env.EXPO_PUBLIC_DJANGO_API_URL ||
-    "https://assessed-lance-attitudes-kelkoo.trycloudflare.com/api",
+    "https://install-locate-pupils-capabilities.trycloudflare.com/api",
 };
 
 function run(command, args, options = {}) {
